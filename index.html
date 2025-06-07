@@ -17,7 +17,7 @@
             --background-soft: #ecf0f1; /* Cinzento muito claro */
             --card-background: rgba(255, 255, 255, 0.98); /* Quase branco com pouca transparência */
             --border-light: #bdc3c7; /* Cinzento claro para bordas */
-            --shadow-color: rgba(0, 0, 0, 0.08); /* Sombra mais suave */
+            --shadow-color: rgba(0, 0, 0, 0.1); /* Sombra mais visível e um pouco mais forte para web */
         }
 
         html, body {
@@ -28,210 +28,222 @@
         }
         body {
             font-family: 'Inter', sans-serif;
-            line-height: 1.5; /* Linha de altura confortável */
+            line-height: 1.6; /* Linha de altura confortável para leitura em ecrã */
             color: var(--primary-text);
             background-color: var(--background-soft);
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 1.5rem; /* Um pouco mais de padding no corpo */
+            padding: 2rem; /* Padding generoso no corpo para visualização web */
             box-sizing: border-box;
             overflow-y: auto; /* Permitir rolagem se o conteúdo exceder */
         }
         .bible-container {
             background-image: url('https://placehold.co/1200x800/EBF5EE/333333?text=Campo+de+Trigo');
-            background-size: cover;
+            background-size: cover; /* Faz a imagem de fundo cobrir todo o container */
             background-repeat: no-repeat;
             background-position: center;
-            background-attachment: fixed;
-            height: 100%; /* Preenche a altura do body */
+            background-attachment: fixed; /* Efeito de paralaxe para web */
+            min-height: 90vh; /* Altura mínima para preencher a maioria da viewport */
             width: 100%;
+            max-width: 1000px; /* Adicionado um max-width para o container externo */
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 1.5rem; /* Padding ligeiramente aumentado para melhor margem */
+            padding: 2rem; /* Padding ligeiramente aumentado para melhor margem visual */
             box-sizing: border-box;
-            border-radius: 1.5rem; /* Cantos mais arredondados */
+            border-radius: 1.5rem; /* Cantos arredondados */
             overflow: hidden;
-            box-shadow: 0 15px 30px var(--shadow-color); /* Sombra mais visível */
+            box-shadow: 0 20px 40px var(--shadow-color); /* Sombra mais pronunciada para web */
         }
         .content-card {
             background-color: var(--card-background);
             border-radius: 1.25rem; /* Mantido ligeiramente menor que o container */
-            box-shadow: 0 8px 20px var(--shadow-color);
-            padding: 2.5rem; /* Padding generoso para "respiro" */
-            max-width: 760px; /* Largura um pouco maior para melhor leitura */
+            box-shadow: 0 10px 25px var(--shadow-color); /* Sombra mais proeminente no card */
+            padding: 3rem; /* Padding generoso para "respiro" em ecrã */
+            max-width: 760px; /* Largura ideal para leitura */
             width: 100%;
             margin: auto;
             text-align: center;
             position: relative;
             border: 1px solid var(--border-light); /* Borda subtil */
+            box-sizing: border-box; /* Garante que padding não aumenta a largura */
         }
         /* Estilo para o título principal */
         .main-title-text {
-            font-size: 1.45rem; /* Um pouco maior */
+            font-size: 1.75rem; /* Aumentado para melhor destaque na web */
             font-weight: 700;
             color: var(--primary-text);
             margin-bottom: 0.8rem;
             text-align: center;
-            letter-spacing: 0.025em; /* Ligeiro espaçamento entre letras */
+            letter-spacing: 0.05em; /* Ligeiro espaçamento entre letras para impacto */
         }
         /* Estilo para o subtítulo */
         .subtitle-text {
-            font-size: 1.2rem; /* Um pouco maior */
+            font-size: 1.4rem; /* Aumentado para melhor destaque na web */
             font-weight: 600;
             color: var(--secondary-text);
-            margin-bottom: 1.2rem;
+            margin-bottom: 1.5rem; /* Mais espaço abaixo */
             text-align: center;
-            letter-spacing: 0.015em;
+            letter-spacing: 0.02em;
         }
         .bible-quote {
-            font-size: 1.15rem; /* Aumentado um pouco */
+            font-size: 1.25rem; /* Aumentado para melhor legibilidade da citação */
             font-style: italic;
-            margin-top: 1.5rem;
-            margin-bottom: 1rem;
+            margin-top: 2rem; /* Mais espaço acima */
+            margin-bottom: 1.2rem;
             color: var(--secondary-text);
-            line-height: 1.6; /* Aumentado para melhor legibilidade */
+            line-height: 1.7; /* Aumentado para melhor legibilidade */
+            padding: 0 1rem; /* Pequeno padding para não colar nas bordas */
         }
         .bible-reference {
             font-weight: 600;
             color: var(--accent-color);
             display: block;
-            margin-bottom: 2rem; /* Mais espaço abaixo */
-            font-size: 1rem; /* Aumentado um pouco */
+            margin-bottom: 2.5rem; /* Mais espaço abaixo */
+            font-size: 1.05rem; /* Aumentado um pouco */
             text-transform: uppercase; /* Maiúsculas para destaque */
-            letter-spacing: 0.05em;
+            letter-spacing: 0.08em;
         }
         .section-title {
-            font-size: 1.35rem; /* Aumentado um pouco */
+            font-size: 1.5rem; /* Aumentado para um bom destaque */
             font-weight: 700;
             color: var(--primary-text);
-            margin-top: 2.5rem; /* Mais espaço acima */
-            margin-bottom: 0.9rem;
+            margin-top: 3rem; /* Mais espaço acima */
+            margin-bottom: 1rem;
             border-bottom: 2px solid var(--border-light); /* Borda um pouco mais grossa */
-            padding-bottom: 0.5rem;
+            padding-bottom: 0.6rem;
             display: inline-block;
         }
         p {
-            font-size: 1rem; /* Mantido como 1rem para bom corpo de texto */
+            font-size: 1.05rem; /* Ligeiramente maior para bom corpo de texto em ecrã */
             color: var(--primary-text);
-            margin-bottom: 1.2rem; /* Mais espaço entre parágrafos */
+            margin-bottom: 1.5rem; /* Mais espaço entre parágrafos */
             text-align: justify;
-            line-height: 1.6; /* Aumentado para melhor legibilidade */
+            line-height: 1.7; /* Aumentado para melhor legibilidade */
         }
         .tip-item {
             display: flex;
             align-items: flex-start;
-            margin-bottom: 0.7rem; /* Mais espaço entre dicas */
+            margin-bottom: 1rem; /* Mais espaço entre dicas */
             text-align: left;
-            font-size: 0.98rem; /* Ligeiramente maior para melhor leitura */
+            font-size: 1rem; /* Aumentado para melhor leitura */
             color: var(--secondary-text);
         }
         .tip-item::before {
             content: '🌿'; /* Emoji */
-            margin-right: 0.6rem;
-            font-size: 1.15rem; /* Ligeiramente maior */
-            line-height: 1.4;
+            margin-right: 0.75rem;
+            font-size: 1.2rem; /* Ligeiramente maior */
+            line-height: 1.5;
             color: #27ae60; /* Verde mais vibrante */
-            flex-shrink: 0; /* Previne que o emoji encolha */
+            flex-shrink: 0;
         }
         ul {
             padding: 0;
-            margin-top: 1rem;
+            margin-top: 1.2rem;
             list-style: none;
         }
 
         /* Ajustes responsivos para ecrãs menores */
         @media (max-width: 768px) {
             body {
-                padding: 0.75rem;
+                padding: 1rem;
             }
             .bible-container {
-                padding: 0.5rem;
-                height: 98vh; /* Ajustar para preencher mais em mobile */
+                padding: 1rem;
+                min-height: 95vh;
             }
             .content-card {
                 padding: 1.5rem;
             }
             .main-title-text {
-                font-size: 1.15rem;
+                font-size: 1.4rem;
             }
             .subtitle-text {
-                font-size: 1.05rem;
+                font-size: 1.1rem;
+            }
+            .bible-quote {
+                font-size: 1.1rem;
+                margin-top: 1.2rem;
+                margin-bottom: 0.8rem;
+            }
+            .bible-reference {
+                font-size: 0.95rem;
+                margin-bottom: 1.5rem;
             }
             .section-title {
-                font-size: 1.15rem;
+                font-size: 1.2rem;
+                margin-top: 2rem;
+                margin-bottom: 0.8rem;
             }
-            .bible-quote, p, .tip-item {
+            p {
+                font-size: 0.95rem;
+                margin-bottom: 1rem;
+            }
+            .tip-item {
                 font-size: 0.9rem;
+                margin-bottom: 0.6rem;
+            }
+            .tip-item::before {
+                font-size: 1.1rem;
             }
         }
 
-        /* Regras de impressão para otimização em PDF */
+        /* Regras de impressão (mantidas e ajustadas para PDF, mas priorizando visualização em ecrã) */
         @media print {
             html, body {
-                height: 100%;
+                height: auto; /* Deixa o conteúdo definir a altura na impressão */
                 margin: 0;
                 padding: 0;
             }
             body {
                 display: block;
                 box-sizing: border-box;
+                line-height: 1.5; /* Ajuste para impressão */
             }
             .bible-container {
-                height: 100%;
+                height: auto; /* Deixa o conteúdo definir a altura na impressão */
                 width: 100%;
                 padding: 0;
                 margin: 0;
                 background-size: cover;
                 background-position: center;
-                background-attachment: scroll; /* Muda para scroll na impressão */
+                background-attachment: scroll;
                 print-color-adjust: exact;
                 -webkit-print-color-adjust: exact;
                 border-radius: 0;
+                box-shadow: none; /* Remover sombra na impressão */
             }
             .content-card {
                 box-shadow: none;
                 border-radius: 0;
-                padding: 1.5cm 1.5cm; /* Padding absoluto e simétrico para impressão */
+                padding: 1.5cm 1.5cm; /* Padding absoluto e maior para impressão */
                 max-width: none;
-                width: 100%; /* Ocupa 100% da largura do pai */
-                height: 100%; /* Ocupa 100% da altura do pai */
-                display: flex;
-                flex-direction: column;
-                justify-content: space-around; /* Distribui bem o espaço */
+                width: 100%;
+                height: auto; /* Deixa o conteúdo definir a altura na impressão */
+                display: block; /* Mudar para block na impressão para fluxo normal */
                 box-sizing: border-box;
+                border: none; /* Remover borda na impressão */
             }
-            /* Ajustar margens dos elementos internos para distribuir melhor o espaço */
+            /* Reset de margens e paddings para impressão, definindo-os em unidades absolutas */
             .main-title-text, .subtitle-text, .bible-quote, .bible-reference, .section-title, p, ul, li {
-                margin-bottom: 0.3rem; /* Margens mínimas */
-                margin-top: 0.3rem; /* Margens mínimas */
+                margin: 0; /* Remover todas as margens */
+                padding: 0; /* Remover todos os paddings */
+                line-height: 1.4; /* Ajustar line-height para impressão */
             }
-            .section-title {
-                margin-top: 0.8rem; /* Margem superior um pouco maior para títulos de seção */
-                padding-bottom: 0.25rem;
-            }
-            /* Fazer a explicação e oração crescerem para preencher o espaço */
-            #brief-explanation-text, #brief-prayer-text {
-                flex-grow: 1;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                text-align: justify;
-                line-height: 1.5; /* Aumentar um pouco a linha de altura na impressão para preencher melhor */
-            }
-            /* Ajustar fontes para maximizar o preenchimento na impressão */
-            .main-title-text { font-size: 1.15rem; }
-            .subtitle-text { font-size: 1.05rem; }
-            .bible-quote { font-size: 1rem; }
-            .bible-reference { font-size: 0.9rem; }
-            .section-title { font-size: 1.1rem; }
-            p { font-size: 0.95rem; }
-            .tip-item { font-size: 0.92rem; }
-            .tip-item::before { font-size: 0.98rem; }
+            .main-title-text { font-size: 1.3rem; margin-bottom: 0.5cm; }
+            .subtitle-text { font-size: 1.1rem; margin-bottom: 0.8cm; }
+            .bible-quote { font-size: 1.05rem; margin-top: 1cm; margin-bottom: 0.8cm; }
+            .bible-reference { font-size: 0.95rem; margin-bottom: 1.2cm; }
+            .section-title { font-size: 1.2rem; margin-top: 1cm; margin-bottom: 0.5cm; border-bottom: 1px solid var(--border-light); padding-bottom: 0.2cm; }
+            p { font-size: 0.98rem; margin-bottom: 0.6cm; text-align: justify; }
+            .tip-item { font-size: 0.95rem; margin-bottom: 0.4cm; }
+            .tip-item::before { font-size: 1rem; margin-right: 0.5rem; }
+            ul { margin-top: 0.5cm; }
+            
+            /* Ajustar quebras de página */
             .content-card p, .content-card li {
-                 page-break-inside: avoid; /* Tentar evitar quebras de página dentro de parágrafos e itens de lista */
+                 page-break-inside: avoid;
             }
         }
     </style>
