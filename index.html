@@ -7,7 +7,7 @@
     <!-- Carregar Tailwind CSS para estilização responsiva -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Definir a fonte Inter para o texto -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         /* Cores Base */
         :root {
@@ -40,12 +40,12 @@
             align-items: center; /* Centraliza horizontalmente o conteúdo */
             justify-content: flex-start; /* Alinha o conteúdo ao topo, permitindo que ele se estenda */
             overflow-y: auto; /* Permite rolagem vertical quando o conteúdo exceder */
-            /* Fundo aplicado ao body */
-            background-image: url('https://placehold.co/1200x800/EBF5EE/333333?text=Campo+de+Trigo');
+            /* Fundo aplicado ao body, será definido por JS */
             background-size: contain; /* Faz a imagem inteira caber, sem cortar */
             background-repeat: no-repeat; /* Evita que a imagem se repita se houver espaço extra */
             background-position: center;
             background-attachment: fixed; /* Efeito de paralaxe para web */
+            transition: background-image 0.5s ease-in-out; /* Transição suave para mudança de fundo */
         }
         /* O .bible-container agora é apenas o wrapper do cartão de conteúdo, sem o fundo */
         .bible-container {
@@ -55,7 +55,7 @@
             justify-content: center;
             align-items: center;
             padding: 0; /* Padding interno será no content-card */
-            box-sizing: border-box;
+            box-sizing: border-box; 
             /* box-shadow e border-radius do container externo */
             border-radius: 1.5rem;
             box-shadow: 0 20px 40px var(--shadow-color);
@@ -77,78 +77,112 @@
             border: 1px solid var(--border-light); /* Borda subtil */
             box-sizing: border-box; /* Garante que padding não aumenta a largura */
         }
-        /* Estilo para o título principal */
+        /* Estilo para o título principal (Estudo Bíblico - X de Y Dias) */
         .main-title-text {
-            font-size: 1.75rem; /* Aumentado para melhor destaque na web */
+            font-size: 1.75rem; /* Tamanho original */
             font-weight: 700;
             color: var(--primary-text);
             margin-bottom: 0.8rem;
             text-align: center;
-            letter-spacing: 0.05em; /* Ligeiro espaçamento entre letras para impacto */
+            letter-spacing: 0.05em;
         }
-        /* Estilo para o subtítulo */
+        /* Estilo para o subtítulo (DIA X - Tema: Y) */
         .subtitle-text {
-            font-size: 1.4rem; /* Aumentado para melhor destaque na web */
+            font-size: 1.4rem; /* Tamanho original */
             font-weight: 600;
             color: var(--secondary-text);
-            margin-bottom: 1.5rem; /* Mais espaço abaixo */
+            margin-bottom: 1.5rem;
             text-align: center;
             letter-spacing: 0.02em;
         }
+        /* O estilo .theme-highlight não será usado para os títulos do Dia 1 ou Dia 2 diretamente */
+        .theme-highlight {
+            font-size: 1.4rem; /* Mantendo o tamanho base do subtitle-text se usado */
+            font-weight: 600;
+            color: var(--secondary-text);
+            letter-spacing: 0.02em;
+        }
         .bible-quote {
-            font-size: 1.25rem; /* Aumentado para melhor legibilidade da citação */
+            font-size: 1.25rem;
             font-style: italic;
-            margin-top: 2rem; /* Mais espaço acima */
+            font-weight: 500;
+            margin-top: 2rem;
             margin-bottom: 1.2rem;
             color: var(--secondary-text);
-            line-height: 1.7; /* Aumentado para melhor legibilidade */
-            padding: 0 1rem; /* Pequeno padding para não colar nas bordas */
+            line-height: 1.7;
+            padding: 0 1rem;
         }
         .bible-reference {
             font-weight: 600;
             color: var(--accent-color);
             display: block;
-            margin-bottom: 2.5rem; /* Mais espaço abaixo */
-            font-size: 1.05rem; /* Aumentado um pouco */
-            text-transform: uppercase; /* Maiúsculas para destaque */
+            margin-bottom: 2.5rem;
+            font-size: 1.05rem;
+            text-transform: uppercase;
             letter-spacing: 0.08em;
         }
         .section-title {
-            font-size: 1.5rem; /* Aumentado para um bom destaque */
+            font-size: 1.5rem;
             font-weight: 700;
             color: var(--primary-text);
-            margin-top: 3rem; /* Mais espaço acima */
+            margin-top: 3rem;
             margin-bottom: 1rem;
-            border-bottom: 2px solid var(--border-light); /* Borda um pouco mais grossa */
+            border-bottom: 2px solid var(--border-light);
             padding-bottom: 0.6rem;
             display: inline-block;
+            letter-spacing: 0.03em;
         }
         p {
-            font-size: 1.05rem; /* Ligeiramente maior para bom corpo de texto em ecrã */
+            font-size: 1.05rem;
+            font-weight: 400;
             color: var(--primary-text);
-            margin-bottom: 1.5rem; /* Mais espaço entre parágrafos */
+            margin-bottom: 1.5rem;
             text-align: justify;
-            line-height: 1.7; /* Aumentado para melhor legibilidade */
+            line-height: 1.7;
         }
-        .tip-item {
+        .tip-item { /* Esta classe será agora usada para a mensagem motivacional e dicas */
+            display: block;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 400;
+            color: var(--primary-text);
+            margin-bottom: 0.6rem;
+            line-height: 1.6;
+        }
+        .tip-item.motivational-message { /* Estilo para a mensagem motivacional */
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: var(--accent-color);
+            line-height: 1.4;
+            margin-bottom: 1rem;
+        }
+        .tip-item.meditation-text { /* Estilo para o texto de meditação */
+            font-style: italic;
+            font-weight: 500;
+            margin-top: 1rem;
+            line-height: 1.6;
+        }
+        .tip-item.normal-tip { /* Para dicas normais */
             display: flex;
-            align-items: flex-start;
-            margin-bottom: 1rem; /* Mais espaço entre dicas */
             text-align: left;
-            font-size: 1rem; /* Aumentado para melhor leitura */
-            color: var(--secondary-text);
+            align-items: flex-start;
+            margin-bottom: 0.7rem;
         }
-        .tip-item::before {
-            content: '🌿'; /* Emoji */
+        .tip-item.normal-tip .tip-highlight { /* Estilo para a parte destacada das dicas normais */
+            font-weight: 600;
+            color: var(--primary-text);
+        }
+        .tip-item.normal-tip::before { /* Reativar emoji para dicas normais */
+            content: '🌿'; 
             margin-right: 0.75rem;
-            font-size: 1.2rem; /* Ligeiramente maior */
+            font-size: 1.2rem; 
             line-height: 1.5;
-            color: #27ae60; /* Verde mais vibrante */
+            color: #27ae60; 
             flex-shrink: 0;
         }
         ul {
             padding: 0;
-            margin-top: 1.2rem;
+            margin-top: 1.4rem;
             list-style: none;
         }
 
@@ -156,9 +190,9 @@
         .nav-button-container {
             display: flex;
             justify-content: center;
-            gap: 1.5rem;
+            gap: 1.8rem;
             margin-top: 2rem;
-            margin-bottom: 2rem; /* Espaçamento abaixo dos botões */
+            margin-bottom: 2.2rem;
             width: 100%;
             max-width: 1000px;
         }
@@ -168,19 +202,45 @@
             padding: 0.75rem 1.5rem;
             border-radius: 0.5rem;
             font-weight: 600;
-            transition: background-color 0.3s ease;
+            font-size: 1.05rem;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
             cursor: pointer;
             border: none;
-            flex-grow: 1; /* Faz os botões crescerem */
-            max-width: 200px; /* Limita o tamanho máximo dos botões */
+            flex-grow: 1;
+            max-width: 220px;
             text-align: center;
         }
         .nav-button:hover {
             background-color: var(--button-hover-bg);
+            transform: translateY(-2px);
         }
         .nav-button:disabled {
             background-color: #cccccc;
             cursor: not-allowed;
+            transform: translateY(0);
+        }
+
+        /* Reprodutor de Música/Vídeo */
+        .music-player-container {
+            margin-top: 2.5rem;
+            margin-bottom: 2rem;
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+        }
+        .music-player-container iframe {
+            width: 100%;
+            height: 330px;
+            border-radius: 0.85rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            border: none;
+        }
+        .music-player-container p {
+            font-size: 0.95rem;
+            font-style: italic;
+            color: var(--secondary-text);
+            margin-top: 0.8rem;
+            text-align: center;
         }
 
 
@@ -191,7 +251,7 @@
             }
             .bible-container {
                 padding: 1rem;
-                min-height: auto; /* Removido para que se expanda livremente em mobile */
+                min-height: auto;
                 margin-top: 1rem;
                 margin-bottom: 1rem;
             }
@@ -203,6 +263,11 @@
             }
             .subtitle-text {
                 font-size: 1.1rem;
+            }
+            .theme-highlight { /* Não existia nesta versão para mobile */
+                font-size: 1.1rem; /* Ajustado para mobile */
+                margin-top: 0.3rem;
+                letter-spacing: 0.015em;
             }
             .bible-quote {
                 font-size: 1.1rem;
@@ -223,83 +288,106 @@
                 margin-bottom: 1rem;
             }
             .tip-item {
-                font-size: 0.9rem;
-                margin-bottom: 0.6rem;
+                font-size: 0.95rem;
+                margin-bottom: 0.7rem;
             }
-            .tip-item::before {
-                font-size: 1.1rem;
+            .tip-item.normal-tip::before {
+                display: block;
+            }
+            .tip-item.motivational-message::before, 
+            .tip-item.meditation-text::before {
+                display: none;
             }
             .nav-button-container {
-                flex-direction: column; /* Botões em coluna em mobile */
+                flex-direction: column;
                 gap: 0.75rem;
             }
             .nav-button {
-                max-width: none; /* Deixa o botão preencher a largura total em mobile */
+                max-width: none;
+                padding: 0.65rem 1.2rem;
+                font-size: 1rem;
+            }
+            .music-player-container {
+                max-width: 100%;
+                margin-top: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+            .music-player-container iframe {
+                height: 220px;
             }
         }
 
-        /* Regras de impressão (mantidas e ajustadas para PDF, mas priorizando visualização em ecrã) */
+        /* Regras de impressão */
         @media print {
             html, body {
-                height: 100%; /* Para impressão, queremos que o conteúdo preencha a página */
+                height: 100%;
                 margin: 0;
                 padding: 0;
-                overflow: hidden; /* Oculta a barra de rolagem na impressão */
+                overflow: hidden;
             }
             body {
-                display: block; /* Volta para o comportamento de bloco na impressão */
+                display: block;
                 box-sizing: border-box;
-                line-height: 1.5; /* Ajuste para impressão */
-                background-image: url('https://placehold.co/1200x800/EBF5EE/333333?text=Campo+de+Trigo'); /* Fundo no body para imprimir */
-                background-size: cover; /* Fundo cobre a página inteira na impressão */
+                line-height: 1.5;
+                background-size: cover;
                 background-position: center;
                 background-repeat: no-repeat;
-                background-attachment: scroll; /* Muda para scroll na impressão */
+                background-attachment: scroll;
                 print-color-adjust: exact;
                 -webkit-print-color-adjust: exact;
             }
             .bible-container {
-                height: 100%; /* Preenche a altura da página impressa */
+                height: 100%;
                 width: 100%;
                 padding: 0;
                 margin: 0;
                 border-radius: 0;
-                box-shadow: none; /* Remover sombra na impressão */
-                background-color: transparent; /* Remover cor de fundo se houver */
+                box-shadow: none;
+                background-color: transparent;
             }
             .content-card {
                 box-shadow: none;
                 border-radius: 0;
-                padding: 1.5cm 1.5cm; /* Padding absoluto e maior para impressão */
+                padding: 1.5cm 1.5cm;
                 max-width: none;
                 width: 100%;
-                height: 100%; /* Preenche a altura do bible-container na impressão */
-                display: flex; /* Mantém flex para distribuição de conteúdo em impressão */
+                height: 100%;
+                display: flex;
                 flex-direction: column;
-                justify-content: space-around; /* Distribuir bem o espaço */
+                justify-content: space-around;
                 box-sizing: border-box;
-                border: none; /* Remover borda na impressão */
+                border: none;
             }
-            /* Reset de margens e paddings para impressão, definindo-os em unidades absolutas */
             .main-title-text, .subtitle-text, .bible-quote, .bible-reference, .section-title, p, ul, li {
-                margin: 0; /* Remover todas as margens */
-                padding: 0; /* Remover todos os paddings */
-                line-height: 1.4; /* Ajustar line-height para impressão */
+                margin: 0;
+                padding: 0;
+                line-height: 1.4;
             }
             .main-title-text { font-size: 1.3rem; margin-bottom: 0.5cm; }
             .subtitle-text { font-size: 1.1rem; margin-bottom: 0.8cm; }
+            .theme-highlight { font-size: 1.3rem; margin-top: 0.3cm; } /* Ajuste para impressão */
             .bible-quote { font-size: 1.05rem; margin-top: 1cm; margin-bottom: 0.8cm; }
             .bible-reference { font-size: 0.95rem; margin-bottom: 1.2cm; }
             .section-title { font-size: 1.2rem; margin-top: 1cm; margin-bottom: 0.5cm; border-bottom: 1px solid var(--border-light); padding-bottom: 0.2cm; }
             p { font-size: 0.98rem; margin-bottom: 0.6cm; text-align: justify; }
             .tip-item { font-size: 0.95rem; margin-bottom: 0.4cm; }
-            .tip-item::before { font-size: 1rem; margin-right: 0.5rem; }
-            ul { margin-top: 0.5cm; }
-            .nav-button-container { /* Esconder botões de navegação na impressão */
+            .tip-item.normal-tip::before {
+                display: block;
+                content: ' ';
+                margin-right: 0.5rem;
+                font-size: 1rem;
+                line-height: 1.3;
+                color: #27ae60;
+                flex-shrink: 0;
+            }
+            .tip-item.motivational-message::before, 
+            .tip-item.meditation-text::before {
                 display: none;
             }
-            
-            /* Ajustar quebras de página */
+            ul { margin-top: 0.5cm; }
+            .nav-button-container, .music-player-container {
+                display: none;
+            }
             .content-card p, .content-card li {
                  page-break-inside: avoid;
             }
@@ -321,9 +409,22 @@
             <h3 class="section-title">Breve Oração:</h3>
             <p id="brief-prayer-text"></p>
 
-            <h3 class="section-title">Duas Dicas para Melhorar o Dia:</h3>
+            <h3 class="section-title" id="bonus-espiritual-title">Dicas para o seu dia</h3>
             <ul id="tips-list"></ul>
         </div>
+    </div>
+
+    <!-- Reprodutor de Música/Vídeo do YouTube -->
+    <div class="music-player-container">
+        <iframe 
+            id="youtube-player-iframe"
+            src="" 
+            title="YouTube video player" 
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            allowfullscreen
+        ></iframe>
+        <p>Ajuste o ID do vídeo acima (VIDEO_ID_AQUI) para a música cristã desejada. Lembre-se dos direitos de autor.</p>
     </div>
 
     <!-- Botões de navegação -->
@@ -334,10 +435,12 @@
 
     <script>
         // Dados para os 7 dias de estudo bíblico
+        var TOTAL_DIAS = 7; // Define o número total de dias fixo para o título
+
         const bibleStudyData = [
             {
                 dayNumber: 1,
-                theme: "A Parábola do Joio",
+                theme: "A Parábola do Joio 🌾", // Adicionado emoji
                 verseQuote: "Deixai crescer ambos juntos até a ceifa; e por ocasião da ceifa direi aos ceifeiros: colhei primeiro o joio, e atai-o em molhos para o queimar; mas o trigo, ajuntai-o no meu celeiro.",
                 verseReference: "Mateus 13:30",
                 briefExplanation: "Jesus nos ensina que no mundo o bem e o mal crescem lado a lado. Muitas vezes nos perguntamos por que Deus permite a presença do mal, mas Ele nos mostra que há um tempo para tudo. Tentar arrancar o mal prematuramente pode causar dano ao bem. Nosso papel é crescer como trigo, mantendo a fé e os frutos do Espírito, mesmo em meio às dificuldades e influências negativas. No tempo certo, Deus fará a separação. Não nos cabe julgar ou condenar, mas permanecer fiéis e confiantes na justiça divina.",
@@ -345,56 +448,118 @@
                 tips: [
                     "Pratique a paciência hoje: em vez de reagir com julgamento, escolha responder com graça e confiança em Deus.",
                     "Fale palavras de vida: ao conversar com alguém, escolha conscientemente expressar palavras que edificam e encorajam."
-                ]
+                ],
+                videoUrl: "", // Sem vídeo para o Dia 1
+                backgroundImage: 'url("https://placehold.co/1200x800/EBF5EE/333333?text=Campo+de+Trigo")' // Fundo original para o Dia 1
+            },
+            {
+                dayNumber: 2,
+                theme: "Planos de Esperança e Futuro 🌟", // Adicionado emoji
+                verseQuote: "Porque sou eu que conheço os planos que tenho para vocês', diz o Senhor, 'planos de fazê-los prosperar e não de causar dano, planos de dar a vocês esperança e um futuro.",
+                verseReference: "Jeremias 29:11",
+                briefExplanation: "Este versículo de Jeremias é uma poderosa promessa de Deus para o Seu povo. Ele nos revela que, mesmo em meio às incertezas ou dificuldades, Deus tem um propósito soberano e amoroso para as nossas vidas. Os Seus planos não são para nos prejudicar, mas para nos conduzir à prosperidade (em um sentido amplo, que inclui bem-estar espiritual e emocional), para nos dar esperança quando tudo parece incerto, e para nos guiar em direção a um futuro que Ele já preparou. É um convite à confiança plena na fidelidade e no cuidado divino, mesmo quando não conseguimos ver o caminho à frente.",
+                briefPrayer: "Amado Pai, obrigado(a) porque os Teus planos para mim são de esperança e um futuro, e não de mal. Ajuda-me a confiar plenamente na Tua soberania, mesmo quando não compreendo as circunstâncias. Que a Tua esperança transborde em meu coração, e que eu possa viver cada dia na certeza de que Tu és bom e que o meu futuro está seguro em Tuas mãos. Ensina-me a confiar, mesmo quando eu não vejo. Amém.",
+                tips: [
+                    "Um excelente dia!<br>Que a força e o amor de Deus transborde no seu coração.",
+                    "Proponho-lhe ouvir a música abaixo e meditar por 5 minutos com fones 🎧: sinta o poder do Amor de Cristo em sua vida." 
+                ],
+                videoUrl: "https://www.youtube.com/watch?v=mZ9yZYo9Mmk", // Vídeo para o Dia 2
+                backgroundImage: 'url("https://placehold.co/1200x800/EBF5EE/333333?text=Esperanca")' // Fundo original para o Dia 2
+            },
+            {
+                dayNumber: 3,
+                theme: "Mais que Vencedores",
+                verseQuote: "Mas em todas estas coisas somos mais do que vencedores, por aquele que nos amou.",
+                verseReference: "Romanos 8:37 (NVI)",
+                briefExplanation: "Este versículo nos lembra da nossa posição de vitória em Cristo. Não somos apenas vencedores, mas 'mais do que vencedores', o que implica um triunfo completo e abundante sobre qualquer adversidade. Esta vitória não vem da nossa própria força, mas através do amor inabalável de Jesus, que já conquistou tudo por nós. É um convite a vivermos na certeza dessa vitória, confiando plenamente no amor que nos capacita a superar todos os desafios. Em meio às lutas e desafios da vida, a fé em Cristo nos assegura que a vitória final já é nossa. Não importa o que enfrentemos, o amor de Deus é a nossa garantia e o nosso poder para ir além.",
+                briefPrayer: "Pai amado, obrigado pelo Teu amor que me faz mais que vencedor. Ajuda-me a viver cada dia na certeza da vitória que já me deste em Cristo. Capacita-me a enfrentar os desafios com fé inabalável, sabendo que em Ti sou forte e posso superar qualquer obstáculo. Que a minha vida seja um testemunho do Teu poder e do Teu amor que tudo vence. Amém.",
+                tips: [
+                    "Desejo-lhe um excelente dia!<br>Que a força e o amor de Deus transborde no seu coração.",
+                    "Proponho-lhe ouvir a música abaixo e meditar por 5 minutos 🎧: sinta o poder do Amor de Cristo em sua vida." 
+                ],
+                videoUrl: "https://www.youtube.com/watch?v=oQXZZcWtOQw",
+                backgroundImage: 'url("https://placehold.co/1200x800/EBF5EE/333333?text=Somos+Vencedores")'
             }
-            // Não há mais dias adicionados por enquanto, como solicitado.
-            // Para adicionar mais dias, basta copiar e colar o bloco de dados de um dia e ajustar os valores.
         ];
 
-        let currentDayIndex = 0; // Começa no Dia 1 (índice 0)
+        let currentDayIndex = 0;
 
-        // Função para carregar o conteúdo do dia atual
         function loadDayContent(dayIndex) {
             const data = bibleStudyData[dayIndex];
+            const totalDaysDisplay = TOTAL_DIAS;
+            const bonusEspiritualTitleEl = document.getElementById('bonus-espiritual-title');
 
-            // Atualiza o título da página
             document.getElementById('page-title').innerText = `Estudo Bíblico - Dia ${data.dayNumber} - ${data.theme}`;
+            document.getElementById('main-title-text-el').innerText = `Estudo Bíblico - ${data.dayNumber} de ${totalDaysDisplay} Dias`;
+            
+            // Alteração para o formato DIA X <br> Tema
+            document.getElementById('subtitle-text-el').innerHTML = `DIA ${data.dayNumber}<br><span class="theme-highlight">${data.theme}</span>`;
+            
+            // Ocultar o versículo e a referência se eles já estiverem na breve explicação (como para o Dia 2)
+            if (data.dayNumber === 2) {
+                document.getElementById('bible-quote-text').innerText = "";
+                document.getElementById('bible-reference-text').innerText = "";
+            } else {
+                document.getElementById('bible-quote-text').innerText = `"${data.verseQuote}"`;
+                document.getElementById('bible-reference-text').innerText = data.verseReference;
+            }
 
-            // Atualiza os elementos HTML com os dados do dia
-            document.getElementById('main-title-text-el').innerText = `Estudo Bíblico - ${data.dayNumber} de ${bibleStudyData.length} Dias`;
-            document.getElementById('subtitle-text-el').innerText = `DIA ${data.dayNumber} - Tema: ${data.theme}`;
-            document.getElementById('bible-quote-text').innerText = `"${data.verseQuote}"`;
-            document.getElementById('bible-reference-text').innerText = data.verseReference;
             document.getElementById('brief-explanation-text').innerText = data.briefExplanation;
             document.getElementById('brief-prayer-text').innerText = data.briefPrayer;
 
             const tipsList = document.getElementById('tips-list');
-            tipsList.innerHTML = ''; // Limpa as dicas anteriores
-            data.tips.forEach(tip => {
-                const li = document.createElement('li');
-                li.className = 'tip-item';
-                // Adaptação para destacar a primeira parte da dica e remover asteriscos
-                // Primeiro, remove quaisquer asteriscos duplos que possam ter sido copiados
-                let cleanTip = tip.replace(/\*\*/g, ''); 
-                
-                const parts = cleanTip.split(':');
-                if (parts.length > 1) {
-                    // Adiciona a parte destacada e o restante da dica
-                    const highlightedPart = `<span class="font-semibold text-primary-text">${parts[0]}:</span>`;
-                    const remainingPart = parts.slice(1).join(':').trim();
-                    li.innerHTML = `${highlightedPart} ${remainingPart}`;
-                } else {
-                    // Se não houver dois pontos, apenas usa o texto limpo
-                    li.innerHTML = cleanTip; 
-                }
-                tipsList.appendChild(li);
-            });
+            tipsList.innerHTML = '';
 
-            // Atualiza o estado dos botões de navegação
+            document.body.style.backgroundImage = data.backgroundImage;
+
+            if (data.dayNumber === 1) { 
+                bonusEspiritualTitleEl.innerText = "Dicas para o seu dia"; 
+
+                data.tips.forEach(tip => {
+                    const li = document.createElement('li');
+                    li.className = 'tip-item normal-tip'; 
+                    let cleanTip = tip.replace(/\*\*/g, ''); 
+                    
+                    const parts = cleanTip.split(':');
+                    if (parts.length > 1) {
+                        const highlightedPart = `<span class="tip-highlight">${parts[0]}:</span>`; 
+                        const remainingPart = parts.slice(1).join(':').trim();
+                        li.innerHTML = `${highlightedPart} ${remainingPart}`;
+                    } else {
+                        li.innerHTML = cleanTip; 
+                    }
+                    tipsList.appendChild(li);
+                });
+
+            } else {
+                bonusEspiritualTitleEl.innerText = "Bônus Espiritual ✨"; 
+
+                const motivationalHeading = document.createElement('li');
+                motivationalHeading.className = 'tip-item motivational-message'; 
+                motivationalHeading.innerHTML = data.tips[0]; 
+                tipsList.appendChild(motivationalHeading);
+
+                const meditationLi = document.createElement('li');
+                meditationLi.className = 'tip-item meditation-text'; 
+                meditationLi.innerHTML = data.tips[1]; 
+                tipsList.appendChild(meditationLi);
+            }
+
+            const youtubeIframe = document.getElementById('youtube-player-iframe');
+            const musicPlayerContainer = document.querySelector('.music-player-container');
+
+            if (data.videoUrl && data.videoUrl !== "") {
+                const videoId = data.videoUrl.split('v=')[1];
+                youtubeIframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=0&mute=0&controls=1&loop=1&playlist=${videoId}`;
+                musicPlayerContainer.style.display = 'block';
+            } else {
+                youtubeIframe.src = "";
+                musicPlayerContainer.style.display = 'none';
+            }
+
             updateNavigationButtons();
         }
 
-        // Função para atualizar o estado dos botões de navegação (ativado/desativado)
         function updateNavigationButtons() {
             const prevBtn = document.getElementById('prev-day-btn');
             const nextBtn = document.getElementById('next-day-btn');
@@ -403,12 +568,11 @@
             nextBtn.disabled = (currentDayIndex === bibleStudyData.length - 1);
         }
 
-        // Event Listeners para os botões de navegação
         document.getElementById('prev-day-btn').addEventListener('click', () => {
             if (currentDayIndex > 0) {
                 currentDayIndex--;
                 loadDayContent(currentDayIndex);
-                window.scrollTo({ top: 0, behavior: 'smooth' }); // Rola para o topo da página
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         });
 
@@ -416,31 +580,14 @@
             if (currentDayIndex < bibleStudyData.length - 1) {
                 currentDayIndex++;
                 loadDayContent(currentDayIndex);
-                window.scrollTo({ top: 0, behavior: 'smooth' }); // Rola para o topo da página
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         });
 
-        // Carrega o conteúdo do primeiro dia quando a página é carregada
         document.addEventListener('DOMContentLoaded', () => {
             loadDayContent(currentDayIndex);
         });
     </script>
 </body>
 </html>
-```
-
-Ajustei o código JavaScript na secção `data.tips.forEach(tip => { ... })` para ser mais robusto:
-1.  Agora ele remove quaisquer asteriscos duplos (`**`) da string `tip` *antes* de tentar dividir pelo dois pontos. Isso garante que a formatação Markdown não interfira.
-2.  A lógica de divisão e destaque permanece a mesma, aplicando o `<span>` para o negrito e a cor.
-
-**Por favor, siga estes passos com a máxima atenção:**
-
-1.  **Copie TODO o código HTML** do Canvas acima (da tag `<!DOCTYPE html>` até `</html>`).
-2.  **Abra o Bloco de Notas** (Windows) ou TextEdit (Mac).
-3.  **Cole o código copiado** num novo documento.
-4.  **Guarde o ficheiro** com o nome `index.html`. Lembre-se de selecionar **"Todos os Ficheiros"** como "Tipo de ficheiro" e **"UTF-8"** como "Codificação" ao guardar.
-5.  **Carregue este `index.html`** para o seu repositório GitHub (`policialcristao/Estudo-Biblico`), substituindo o ficheiro existente.
-6.  **Aguarde alguns minutos** para o GitHub Pages processar a atualização.
-7.  **Aceda ao seu site:** `https://policialcristao.github.io/Estudo-Biblico/`
-
-Quando o site carregar, as dicas devem agora estar formatadas corretamente, sem asteriscos e com a parte inicial destacada, exatamente como ped
+ 
