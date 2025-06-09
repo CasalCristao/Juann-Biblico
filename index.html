@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Estudo Bíblico - Tema Diário</title>
+    <!-- Carregar Tailwind CSS para estilização responsiva -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Definir a fonte Inter para o texto -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Cores Base */
+        :root {
+            --primary-text: #2c3e50; /* Cinzento escuro quase preto */
+            --secondary-text: #34495e; /* Cinzento azulado */
+            --accent-color: #2980b9; /* Azul vibrante para detalhes */
+            --background-soft: #ecf0f1; /* Cinzento muito claro */
+            --card-background: rgba(255, 255, 255, 0.98); /* Quase branco com pouca transparência */
+            --border-light: #bdc3c7; /* Cinzento claro para bordas */
+            --shadow-color: rgba(0, 0, 0, 0.1); /* Sombra mais visível e um pouco mais forte para web */
+            --button-bg: #4a90e2; /* Azul para botões */
+            --button-hover-bg: #357ABD; /* Azul mais escuro para hover */
+        }
+
+        html {
+            height: 100%; /* Garante que html ocupa a altura total do viewport para o body */
+            scroll-behavior: smooth; /* Rolagem suave */
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6; /* Linha de altura confortável para leitura em ecrã */
+            color: var(--primary-text);
+            background-color: var(--background-soft);
+            margin: 0; /* Remove margens padrão do body */
+            padding: 2rem; /* Padding geral para o corpo, criando margem ao redor do conteúdo */
+            box-sizing: border-box;
+            min-height: 100vh; /* Garante que ocupa pelo menos a altura da tela */
+            display: flex; /* Usa flexbox para centralizar e permitir rolagem */
+            flex-direction: column; /* Conteúdo em coluna */
+            align-items: center; /* Centraliza horizontalmente o conteúdo */
+            justify-content: flex-start; /* Alinha o conteúdo ao topo, permitindo que ele se estenda */
+            overflow-y: auto; /* Permite rolagem vertical quando o conteúdo exceder */
+            /* Fundo aplicado ao body, será definido por JS */
+            background-size: contain; /* Faz a imagem inteira caber, sem cortar */
+            background-repeat: no-repeat; /* Evita que a imagem se repita se houver espaço extra */
+            background-position: center;
+            background-attachment: fixed; /* Efeito de paralaxe para web */
+            transition: background-image 0.5s ease-in-out; /* Transição suave para mudança de fundo */
+        }
+        /* O .bible-container agora é apenas o wrapper do cartão de conteúdo, sem o fundo */
+        .bible-container {
+            width: 100%;
+            max-width: 1000px; /* Limita a largura da área principal de conteúdo */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0; /* Padding interno será no content-card */
+            box-sizing: border-box; 
+            /* box-shadow e border-radius do container externo */
+            border-radius: 1.5rem;
+            box-shadow: 0 20px 40px var(--shadow-color);
+            margin-top: 2rem; /* Espaçamento do topo do viewport */
+            margin-bottom: 2rem; /* Espaçamento da parte inferior do viewport/próximo conteúdo */
+            flex-shrink: 0; /* Previne que o container encolha abaixo do tamanho do seu conteúdo */
+            background-color: transparent; /* Certificar que não bloqueia o fundo do body */
+        }
+        .content-card {
+            background-color: var(--card-background);
+            border-radius: 1.25rem; /* Ligeiramente menor que o container */
+            box-shadow: 0 10px 25px var(--shadow-color); /* Sombra mais proeminente no card */
+            padding: 3rem; /* Padding generoso para "respiro" em ecrã */
+            max-width: 760px; /* Largura ideal para leitura */
+            width: 100%;
+            margin: auto;
+            text-align: center;
+            position: relative;
+            border: 1px solid var(--border-light); /* Borda subtil */
+            box-sizing: border-box; /* Garante que padding não aumenta a largura */
+        }
+        /* Estilo para o título principal (Estudo Bíblico - X de Y Dias) */
+        .main-title-text {
+            font-size: 1.75rem; /* Tamanho original */
+            font-weight: 700;
+            color: var(--primary-text);
+            margin-bottom: 0.8rem;
+            text-align: center;
+            letter-spacing: 0.05em;
+        }
+        /* Estilo para o subtítulo (DIA X - Tema: Y) */
+        .subtitle-text {
+            font-size: 1.4rem; /* Tamanho original */
+            font-weight: 600;
+            color: var(--secondary-text);
+            margin-bottom: 1.5rem;
+            text-align: center;
+            letter-spacing: 0.02em;
+        }
+        /* O estilo .theme-highlight não será usado para os títulos do Dia 1 ou Dia 2 diretamente */
+        .theme-highlight {
+            font-size: 1.4rem; /* Mantendo o tamanho base do subtitle-text se usado */
+            font-weight: 600;
+            color: var(--secondary-text);
+            letter-spacing: 0.02em;
+        }
+        .bible-quote {
+            font-size: 1.25rem;
+            font-style: italic;
+            font-weight: 500;
+            margin-top: 2rem;
+            margin-bottom: 1.2rem;
+            color: var(--secondary-text);
+            line-height: 1.7;
+            padding: 0 1rem;
+        }
+        .bible-reference {
+            font-weight: 600;
+            color: var(--accent-color);
+            display: block;
+            margin-bottom: 2.5rem;
+            font-size: 1.05rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-text);
+            margin-top: 3rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--border-light);
+            padding-bottom: 0.6rem;
+            display: inline-block;
+            letter-spacing: 0.03em;
+        }
+        /* Nova classe para subtítulos dentro da explicação */
+        .sub-section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary-text);
+            margin-top: 1.8rem;
+            margin-bottom: 0.8rem;
+            text-align: left;
+        }
+        p {
+            font-size: 1.05rem;
+            font-weight: 400;
+            color: var(--primary-text);
+            margin-bottom: 1.5rem;
+            text-align: justify;
+            line-height: 1.7;
+        }
+        .tip-item { /* Esta classe será agora usada para a mensagem motivacional e dicas */
+            display: block;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 400;
+            color: var(--primary-text);
+            margin-bottom: 0.6rem;
+            line-height: 1.6;
+        }
+        .tip-item.motivational-message { /* Estilo para a mensagem motivacional */
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: var(--accent-color);
+            line-height: 1.4;
+            margin-bottom: 1rem;
+        }
+        .tip-item.meditation-text { /* Estilo para o texto de meditação */
+            font-style: italic;
+            font-weight: 500;
+            margin-top: 1rem;
+            line-height: 1.6;
+        }
+        .tip-item.normal-tip { /* Para dicas normais */
+            display: flex;
+            text-align: left;
+            align-items: flex-start;
+            margin-bottom: 0.7rem;
+        }
+        .tip-item.normal-tip .tip-highlight { /* Estilo para a parte destacada das dicas normais */
+            font-weight: 600;
+            color: var(--primary-text);
+        }
+        .tip-item.normal-tip::before { /* Reativar emoji para dicas normais */
+            content: '🌿'; 
+            margin-right: 0.75rem;
+            font-size: 1.2rem; 
+            line-height: 1.5;
+            color: #27ae60; 
+            flex-shrink: 0;
+        }
+        ul {
+            padding-left: 1.5rem; /* Adicionar recuo para listas */
+            margin-top: 1.4rem;
+            list-style: disc; /* Usar bullet points */
+        }
+        ul li {
+            margin-bottom: 0.5rem; /* Espaçamento entre itens de lista */
+            text-align: left; /* Alinhar texto da lista à esquerda */
+        }
+
+        /* Botões de navegação */
+        .nav-button-container {
+            display: flex;
+            justify-content: center;
+            gap: 1.8rem;
+            margin-top: 2rem;
+            margin-bottom: 2.2rem;
+            width: 100%;
+            max-width: 1000px;
+        }
+        .nav-button {
+            background-color: var(--button-bg);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            font-size: 1.05rem;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
+            border: none;
+            flex-grow: 1;
+            max-width: 220px;
+            text-align: center;
+        }
+        .nav-button:hover {
+            background-color: var(--button-hover-bg);
+            transform: translateY(-2px);
+        }
+        .nav-button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: translateY(0);
+        }
+
+        /* Reprodutor de Música/Vídeo */
+        .music-player-container {
+            margin-top: 2.5rem;
+            margin-bottom: 2rem;
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+        }
+        .music-player-container iframe {
+            width: 100%;
+            height: 330px;
+            border-radius: 0.85rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            border: none;
+        }
+        .music-player-container p {
+            font-size: 0.95rem;
+            font-style: italic;
+            color: var(--secondary-text);
+            margin-top: 0.8rem;
+            text-align: center;
+        }
+
+        /* Estilo para a imagem no final do dia */
+        .bottom-image-container {
+            text-align: center;
+            margin-top: 3rem; /* Espaçamento acima da imagem */
+            margin-bottom: 1rem; /* Espaçamento abaixo da imagem */
+        }
+
+        .bottom-image {
+            max-width: 80%; /* Garante que a imagem não seja muito grande */
+            height: auto;
+            border-radius: 0.75rem; /* Cantos arredondados */
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15); /* Sombra sutil */
+        }
+
+
+        /* Ajustes responsivos para ecrãs menores */
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+            .bible-container {
+                padding: 1rem;
+                min-height: auto;
+                margin-top: 1rem;
+                margin-bottom: 1rem;
+            }
+            .content-card {
+                padding: 1.5rem;
+            }
+            .main-title-text {
+                font-size: 1.4rem;
+            }
+            .subtitle-text {
+                font-size: 1.1rem;
+            }
+            .theme-highlight { /* Não existia nesta versão para mobile */
+                font-size: 1.1rem; /* Ajustado para mobile */
+                margin-top: 0.3rem;
+                letter-spacing: 0.015em;
+            }
+            .bible-quote {
+                font-size: 1.1rem;
+                margin-top: 1.2rem;
+                margin-bottom: 0.8rem;
+            }
+            .bible-reference {
+                font-size: 0.95rem;
+                margin-bottom: 1.5rem;
+            }
+            .section-title {
+                font-size: 1.2rem;
+                margin-top: 2rem;
+                margin-bottom: 0.8rem;
+            }
+            .sub-section-title { /* Ajustes para mobile */
+                font-size: 1.1rem;
+                margin-top: 1.5rem;
+                margin-bottom: 0.6rem;
+            }
+            p {
+                font-size: 0.95rem;
+                margin-bottom: 1rem;
+            }
+            .tip-item {
+                font-size: 0.95rem;
+                margin-bottom: 0.7rem;
+            }
+            .tip-item.normal-tip::before {
+                display: block;
+            }
+            .tip-item.motivational-message::before, 
+            .tip-item.meditation-text::before {
+                display: none;
+            }
+            .nav-button-container {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+            .nav-button {
+                max-width: none;
+                padding: 0.65rem 1.2rem;
+                font-size: 1.05rem; /* Ajustado para mobile */
+            }
+            .music-player-container {
+                max-width: 100%;
+                margin-top: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+            .music-player-container iframe {
+                height: 220px;
+            }
+            .bottom-image-container {
+                margin-top: 2rem;
+                margin-bottom: 0.5rem;
+            }
+            .bottom-image {
+                max-width: 95%; /* Mais largo em mobile */
+            }
+        }
+
+        /* Regras de impressão */
+        @media print {
+            html, body {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+                overflow: hidden;
+            }
+            body {
+                display: block;
+                box-sizing: border-box;
+                line-height: 1.5;
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+                background-attachment: scroll;
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
+            .bible-container {
+                height: 100%;
+                width: 100%;
+                padding: 0;
+                margin: 0;
+                border-radius: 0;
+                box-shadow: none;
+                background-color: transparent;
+            }
+            .content-card {
+                box-shadow: none;
+                border-radius: 0;
+                padding: 1.5cm 1.5cm;
+                max-width: none;
+                width: 100%;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-around;
+                box-sizing: border-box;
+                border: none;
+            }
+            .main-title-text, .subtitle-text, .bible-quote, .bible-reference, .section-title, p, ul, li {
+                margin: 0;
+                padding: 0;
+                line-height: 1.4;
+            }
+            .main-title-text { font-size: 1.3rem; margin-bottom: 0.5cm; }
+            .subtitle-text { font-size: 1.1rem; margin-bottom: 0.8cm; }
+            .theme-highlight { font-size: 1.3rem; margin-top: 0.3cm; } /* Ajuste para impressão */
+            .bible-quote { font-size: 1.05rem; margin-top: 1cm; margin-bottom: 0.8cm; }
+            .bible-reference { font-size: 0.95rem; margin-bottom: 1.2cm; }
+            .section-title { font-size: 1.2rem; margin-top: 1cm; margin-bottom: 0.5cm; border-bottom: 1px solid var(--border-light); padding-bottom: 0.2cm; }
+            .sub-section-title { font-size: 1.1rem; margin-top: 0.8cm; margin-bottom: 0.3cm; } /* Ajustes para impressão */
+            p { font-size: 0.98rem; margin-bottom: 0.6cm; text-align: justify; }
+            .tip-item { font-size: 0.95rem; margin-bottom: 0.4cm; }
+            .tip-item.normal-tip::before {
+                display: block;
+                content: '🌿';
+                margin-right: 0.5rem;
+                font-size: 1rem;
+                line-height: 1.3;
+                color: #27ae60;
+                flex-shrink: 0;
+            }
+            .tip-item.motivational-message::before, 
+            .tip-item.meditation-text::before {
+                display: none;
+            }
+            ul { margin-top: 0.5cm; padding-left: 0.8cm; list-style: disc; } /* Ajustes para impressão */
+            ul li { margin-bottom: 0.3cm; }
+            .nav-button-container, .music-player-container {
+                display: none;
+            }
+            .bottom-image-container { /* Mostrar imagem no final da impressão */
+                display: block;
+                margin-top: 1cm;
+                text-align: center;
+            }
+            .bottom-image {
+                max-width: 80%; /* Ajuste para impressão */
+                height: auto;
+                box-shadow: none;
+            }
+            .content-card p, .content-card li {
+                 page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bible-container">
+        <div class="content-card">
+            <p class="main-title-text" id="main-title-text-el">Estudo Bíblico - 1 de 7 Dias</p>
+            <p class="subtitle-text" id="subtitle-text-el">DIA 1 - Tema: A Parábola do Joio</p>
+
+            <p class="bible-quote" id="bible-quote-text"></p>
+            <p class="bible-reference" id="bible-reference-text"></p>
+
+            <h3 class="section-title">Breve Explicação:</h3>
+            <p id="brief-explanation-text"></p>
+
+            <h3 class="section-title">Breve Oração:</h3>
+            <p id="brief-prayer-text"></p>
+
+            <h3 class="section-title" id="bonus-espiritual-title">Dicas para o seu dia</h3>
+            <ul id="tips-list"></ul>
+        </div>
+    </div>
+
+    <div class="music-player-container">
+        <iframe 
+            id="youtube-player-iframe"
+            src="" 
+            title="YouTube video player" 
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            allowfullscreen
+        ></iframe>
+        <p>Ajuste o ID do vídeo acima (VIDEO_ID_AQUI) para a música cristã desejada. Lembre-se dos direitos de autor.</p>
+    </div>
+
+    <!-- Botões de navegação -->
+    <div class="nav-button-container">
+        <button id="prev-day-btn" class="nav-button">Dia Anterior</button>
+        <button id="next-day-btn" class="nav-button">Próximo Dia</button>
+    </div>
+
+    <script>
+        // Dados para os 7 dias de estudo bíblico
+        var TOTAL_DIAS = 7; // Define o número total de dias fixo para o título
+
+        var bibleStudyData = [ // Alterado para var para evitar erro de redeclaração
+            {
+                dayNumber: 1,
+                theme: "A Parábola do Joio 🌾", // Adicionado emoji
+                verseQuote: "Deixai crescer ambos juntos até a ceifa; e por ocasião da ceifa direi aos ceifeiros: colhei primeiro o joio, e atai-o em molhos para o queimar; mas o trigo, ajuntai-o no meu celeiro.",
+                verseReference: "Mateus 13:30",
+                briefExplanation: "Jesus nos ensina que no mundo o bem e o mal crescem lado a lado. Muitas vezes nos perguntamos por que Deus permite a presença do mal, mas Ele nos mostra que há um tempo para tudo. Tentar arrancar o mal prematuramente pode causar dano ao bem. Nosso papel é crescer como trigo, mantendo a fé e os frutos do Espírito, mesmo em meio às dificuldades e influências negativas. No tempo certo, Deus fará a separação. Não nos cabe julgar ou condenar, mas permanecer fiéis e confiantes na justiça divina.",
+                briefPrayer: "Senhor, ajuda-me a ser trigo no Teu campo. Dá-me paciência e discernimento para crescer em meio aos desafios. Que eu confie no Teu tempo e viva com amor, fé e esperança. Amém.",
+                tips: [
+                    "Pratique a paciência hoje: em vez de reagir com julgamento, escolha responder com graça e confiança em Deus.",
+                    "Fale palavras de vida: ao conversar com alguém, escolha conscientemente expressar palavras que edificam e encorajam."
+                ],
+                videoUrl: "", // Sem vídeo para o Dia 1
+                backgroundImage: 'url("https://placehold.co/1200x800/EBF5EE/333333?text=Campo+de+Trigo")' // Fundo original para o Dia 1
+            },
+            {
+                dayNumber: 2,
+                theme: "Planos de Esperança e Futuro 🌟", // Adicionado emoji
+                verseQuote: "Porque sou eu que conheço os planos que tenho para vocês', diz o Senhor, 'planos de fazê-los prosperar e não de causar dano, planos de dar a vocês esperança e um futuro.",
+                verseReference: "Jeremias 29:11",
+                briefExplanation: "Este versículo de Jeremias é uma poderosa promessa de Deus para o Seu povo. Ele nos revela que, mesmo em meio às incertezas ou dificuldades, Deus tem um propósito soberano e amoroso para as nossas vidas. Os Seus planos não são para nos prejudicar, mas para nos conduzir à prosperidade (em um sentido amplo, que inclui bem-estar espiritual e emocional), para nos dar esperança quando tudo parece incerto, e para nos guiar em direção a um futuro que Ele já preparou. É um convite à confiança plena na fidelidade e no cuidado divino, mesmo quando não conseguimos ver o caminho à frente.",
+                briefPrayer: "Amado Pai, obrigado(a) porque os Teus planos para mim são de esperança e um futuro, e não de mal. Ajuda-me a confiar plenamente na Tua soberania, mesmo quando não compreendo as circunstâncias. Que a Tua esperança transborde em meu coração, e que eu possa viver cada dia na certeza de que Tu és bom e que o meu futuro está seguro em Tuas mãos. Ensina-me a confiar, mesmo quando eu não vejo. Amém.",
+                tips: [
+                    "Que a força e o amor de Deus transborde no seu coração.",
+                    "Proponho-lhe ouvir a música abaixo e meditar por 5 minutos com fones e olhos fechados 🎧: sinta o poder do Amor de Cristo em sua vida." 
+                ],
+                videoUrl: "https://www.youtube.com/watch?v=oQXZZcWtOQw&list=TLGGk7H24H0sqyAwODA2MjAyNQ&t=12s", // Vídeo atualizado para o Dia 2
+                backgroundImage: 'url("https://placehold.co/1200x800/EBF5EE/333333?text=Esperanca")' // Fundo original para o Dia 2
+            },
+            {
+                dayNumber: 3, // DIA 3 REABILITADO
+                theme: "Nova Criatura", // Novo tema para o Dia 3
+                verseQuote: "Assim que, se alguém está em Cristo, nova criatura é: as coisas velhas já passaram; eis que tudo se fez novo.",
+                verseReference: "2 Coríntios 5:17",
+                briefExplanation: "O versículo 2 Coríntios 5:17 é um dos pilares da fé cristã, revelando a profunda transformação que ocorre quando alguém se encontra em Cristo. Não é apenas uma mudança superficial, mas uma completa renovação interior. As 'coisas velhas' – hábitos pecaminosos, mentalidades antigas, culpas do passado – perdem o seu domínio, e 'tudo se fez novo'. Esta 'nova criatura' vive sob uma nova identidade, guiada pelo Espírito Santo, com novos propósitos e uma perspetiva renovada de vida. É um convite a abraçar a libertação do passado e a viver a plenitude da nova vida que Deus oferece.",
+                briefPrayer: "Pai Amado, agradeço pela obra maravilhosa de transformação em Cristo. Que eu viva cada dia como a nova criatura que sou, deixando o velho para trás e abraçando a novidade de vida que o Teu Espírito proporciona. Renova a minha mente e o meu coração para que tudo em mim glorifique o Teu nome. Amém.",
+                tips: [
+                    "Reflita sobre o 'velho homem': Identifique um hábito ou pensamento antigo que precisa ser deixado para trás hoje.",
+                    "Sugerimos ler o Salmo 25: use este tempo para refletir sobre a nova vida em Cristo e a confiança em Deus." // Dicas atualizadas
+                ],
+                videoUrl: "", // Sem vídeo para o Dia 3
+                backgroundImage: 'url("https://placehold.co/1200x800/EBF5EE/333333?text=Nova+Criatura")' // Fundo específico para o Dia 3
+                ,bottomImage: 'https://raw.githubusercontent.com/policialcristao/Estudo-Biblico/main/Gemini_Generated_Image_i402t4i402t4i402.png' // Imagem para o final do Dia 3
+            },
+            {
+                dayNumber: 4, // NOVO DIA 4
+                theme: "A Ideia de Perseguição 🛡️",
+                verseQuote: "Bem-aventurados os perseguidos por causa da justiça, pois deles é o Reino dos céus. Bem-aventurados sois vós quando vos injuriarem, e perseguirem, e, mentindo, disserem todo o mal contra vós por minha causa. Alegrai-vos e exultai, porque é grande a vossa recompensa nos céus.",
+                verseReference: "Mateus 5:10-12",
+                briefExplanation: `
+                    <h4 class="sub-section-title">Promessa de vitória 🏆</h4>
+                    <p>Romanos 8:35-39: "Quem nos separará do amor de Cristo? Será tribulação, ou angústia, ou perseguição, ou fome, ou nudez, ou perigo, ou espada? (...) Em todas estas coisas somos <strong>mais que vencedores</strong> 💪, por aquele que nos amou."</p>
+                    <h4 class="sub-section-title">A relação é a seguinte:</h4>
+                    <p>Quando você enfrenta perseguição, o que sustenta seu coração? Se o seu <strong>tesouro</strong> estiver na terra (status, reputação, segurança material), a perseguição o abalará profundamente, porque ela tira essas coisas.</p>
+                    <p>Mas se seu <strong>tesouro</strong> está no céu (recompensa eterna, aprovação de Deus, justiça, Reino), você poderá suportar a perseguição com alegria e perseverança.</p>
+                    <p class="text-center">👉 Em outras palavras:<br>Onde estiver o teu <strong>tesouro</strong> ✨, ali estará também o teu coração — e isso determinará como você viverá em tempos de perseguição.</p>
+                    <h4 class="sub-section-title">A perseguição sempre foi uma <strong>realidade para os servos de Deus</strong> 🎯.</h4>
+                    <p>Jesus nos advertiu que, ao segui-Lo, enfrentaríamos oposição. Porém, a perseguição tem um papel importante no <strong>crescimento espiritual</strong> 🌱 e na <strong>expansão do Reino</strong> 👑.</p>
+                    <h4 class="sub-section-title">1. O que é perseguição?</h4>
+                    <ul>
+                        <li><strong>Física:</strong> prisões, agressões, mortes</li>
+                        <li><strong>Moral:</strong> calúnias, rejeição social</li>
+                        <li><strong>Emocional:</strong> pressão psicológica, isolamento</li>
+                        <li><strong>Profissional:</strong> perda de emprego, discriminação</li>
+                    </ul>
+                    <h4 class="sub-section-title">2. O ensino de Jesus sobre perseguição</h4>
+                    <p class="text-center">Jesus não prometeu ausência de perseguição, mas <strong>recompensa celestial</strong> ✨ para os que permanecem fiéis.</p>
+                    <h4 class="sub-section-title">3. Exemplos bíblicos de perseguição</h4>
+                    <ul>
+                        <li>Daniel na cova dos leões (Daniel 6)</li>
+                        <li>Sadraque, Mesaque e Abede-Nego na fornalha (Daniel 3)</li>
+                        <li>Os apóstolos presos e açoitados (Atos 5:40-42)</li>
+                        <li>Paulo sofreu perseguições constantes (2 Coríntios 11:23-28)</li>
+                        <li>Jesus Cristo, o maior exemplo, foi perseguido até a cruz ✝️.</li>
+                    </ul>
+                `,
+                briefPrayer: "Pai, fortalece-me para enfrentar a perseguição com a fé inabalável de que meu verdadeiro tesouro está em Ti. Que a Tua alegria me sustente em todas as provações, e que eu seja um fiel testemunho do Teu amor, vencendo o mal com o bem, para a glória do Teu nome. Amém.",
+                tips: [
+                    "Hoje, ore por aqueles que o perseguem ou o criticam injustamente, lembrando-se do exemplo de Jesus.",
+                    "Reflita sobre uma situação desafiadora em sua vida e peça a Deus para revelar o propósito por trás dela, fortalecendo sua fé."
+                ],
+                videoUrl: "", // Sem vídeo para o Dia 4
+                backgroundImage: 'url("https://placehold.co/1200x800/8B4513/FFFFFF?text=Resiliencia+Crista")' // Fundo específico para o Dia 4
+            }
+        ];
+
+        let currentDayIndex = 0;
+
+        // Função para carregar o conteúdo do dia atual
+        function loadDayContent(dayIndex) {
+            const data = bibleStudyData[dayIndex];
+            var totalDaysDisplay = TOTAL_DIAS; // Usar var aqui pois TOTAL_DIAS já é var
+            const bonusEspiritualTitleEl = document.getElementById('bonus-espiritual-title'); // Obter o elemento do título H3
+            const contentCard = document.querySelector('.content-card'); // Obter o cartão de conteúdo
+
+            // Limpa a imagem anterior do final do dia
+            const existingBottomImage = document.getElementById('bottom-image-display');
+            if (existingBottomImage) {
+                existingBottomImage.remove();
+            }
+
+
+            document.getElementById('page-title').innerText = `Estudo Bíblico - Dia ${data.dayNumber} - ${data.theme}`;
+            document.getElementById('main-title-text-el').innerText = `Estudo Bíblico - ${data.dayNumber} de ${totalDaysDisplay} Dias`;
+            
+            // Revertido: O subtitle-text agora preenche com o tema completo diretamente
+            document.getElementById('subtitle-text-el').innerText = `DIA ${data.dayNumber} - Tema: ${data.theme}`;
+            
+            // Lógica para o versículo e referência
+            if (data.dayNumber === 4) { // Para o Dia 4, o versículo e a referência estão na breve explicação
+                document.getElementById('bible-quote-text').innerText = "";
+                document.getElementById('bible-reference-text').innerText = "";
+            } else { // Para os outros dias, o versículo e a referência são separados
+                document.getElementById('bible-quote-text').innerText = `"${data.verseQuote}"`;
+                document.getElementById('bible-reference-text').innerText = data.verseReference;
+            }
+
+            // A breve explicação pode conter HTML, então use innerHTML
+            document.getElementById('brief-explanation-text').innerHTML = data.briefExplanation;
+            document.getElementById('brief-prayer-text').innerText = data.briefPrayer;
+
+            const tipsList = document.getElementById('tips-list');
+            tipsList.innerHTML = '';
+
+            document.body.style.backgroundImage = data.backgroundImage;
+
+            // Lógica para as dicas / mensagem motivacional
+            if (data.dayNumber === 1 || data.dayNumber === 4) { // Para Dia 1 e Dia 4, usar "Dicas para o seu dia"
+                bonusEspiritualTitleEl.innerText = "Dicas para o seu dia"; 
+
+                data.tips.forEach(tip => {
+                    const li = document.createElement('li');
+                    li.className = 'tip-item normal-tip'; 
+                    let cleanTip = tip.replace(/\*\*/g, ''); 
+                    
+                    const parts = cleanTip.split(':');
+                    if (parts.length > 1) {
+                        const highlightedPart = `<span class="tip-highlight">${parts[0]}:</span>`; 
+                        const remainingPart = parts.slice(1).join(':').trim();
+                        li.innerHTML = `${highlightedPart} ${remainingPart}`;
+                    } else {
+                        li.innerHTML = cleanTip; 
+                    }
+                    tipsList.appendChild(li);
+                });
+
+            } else { // Para o Dia 2, Dia 3, e futuros dias com o formato de bônus espiritual
+                bonusEspiritualTitleEl.innerText = "Bônus Espiritual ✨"; 
+
+                const motivationalHeading = document.createElement('li');
+                motivationalHeading.className = 'tip-item motivational-message'; 
+                motivationalHeading.innerHTML = data.tips[0]; 
+                tipsList.appendChild(motivationalHeading);
+
+                const meditationLi = document.createElement('li');
+                meditationLi.className = 'tip-item meditation-text'; 
+                meditationLi.innerHTML = data.tips[1]; 
+                tipsList.appendChild(meditationLi);
+            }
+
+            const youtubeIframe = document.getElementById('youtube-player-iframe');
+            const musicPlayerContainer = document.querySelector('.music-player-container');
+
+            if (data.videoUrl && data.videoUrl !== "") {
+                const videoId = data.videoUrl.split('v=')[1];
+                // Regex para extrair parâmetros de lista de reprodução e tempo
+                const listMatch = data.videoUrl.match(/list=([^&]+)/);
+                const timeMatch = data.videoUrl.match(/t=([^&]+)/);
+                
+                let youtubeSrc = `https://www.youtube.com/embed/${videoId}?autoplay=0&mute=0&controls=1&loop=1`;
+                if (listMatch) {
+                    youtubeSrc += `&list=${listMatch[1]}`;
+                }
+                if (timeMatch) {
+                    youtubeSrc += `&start=${timeMatch[1]}`;
+                }
+                youtubeSrc += `&playlist=${videoId}`; // Para garantir que loop funciona com ou sem lista
+
+                youtubeIframe.src = youtubeSrc;
+                musicPlayerContainer.style.display = 'block';
+            } else {
+                youtubeIframe.src = "";
+                musicPlayerContainer.style.display = 'none';
+            }
+
+            // Lógica para a imagem no final do dia
+            if (data.bottomImage && data.bottomImage !== "") {
+                const imgContainer = document.createElement('div');
+                imgContainer.className = 'bottom-image-container';
+                imgContainer.id = 'bottom-image-display'; // Para fácil remoção
+                const img = document.createElement('img');
+                img.src = data.bottomImage;
+                img.alt = "Imagem complementar ao estudo bíblico";
+                img.className = 'bottom-image';
+                contentCard.appendChild(imgContainer); // Adiciona a imagem ao content-card
+            }
+
+            updateNavigationButtons();
+        }
+
+        function updateNavigationButtons() {
+            const prevBtn = document.getElementById('prev-day-btn');
+            const nextBtn = document.getElementById('next-day-btn');
+
+            prevBtn.disabled = (currentDayIndex === 0);
+            nextBtn.disabled = (currentDayIndex === bibleStudyData.length - 1);
+        }
+
+        document.getElementById('prev-day-btn').addEventListener('click', () => {
+            if (currentDayIndex > 0) {
+                currentDayIndex--;
+                loadDayContent(currentDayIndex);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+
+        document.getElementById('next-day-btn').addEventListener('click', () => {
+            if (currentDayIndex < bibleStudyData.length - 1) {
+                currentDayIndex++;
+                loadDayContent(currentDayIndex);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadDayContent(currentDayIndex);
+        });
+    </script>
+</body>
+</html>
