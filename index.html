@@ -18,7 +18,7 @@
             background-image: url('https://www.transparenttextures.com/patterns/clean-gray-paper.png');
             background-color: #1F2937;
         }
-        .card-bg:hover {
+        .card-link:hover {
             transform: translateY(-5px) scale(1.02);
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
         }
@@ -30,8 +30,10 @@
         
         <!-- Cabeçalho -->
         <header class="text-center mb-12">
-            <div class="inline-block bg-blue-600 p-2 mb-4 rounded-lg text-4xl">
-                <span>👮</span>
+            <div class="inline-block bg-blue-600 p-3 mb-4 rounded-lg">
+                <svg class="w-8 h-10 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 32" fill="currentColor">
+                   <path d="M10.5 0h3v12h6v3h-6v17h-3V15H4.5v-3h6V0z" />
+                </svg>
             </div>
             <h1 class="header-font text-6xl md:text-8xl font-bold tracking-wider uppercase text-gray-100">
                 Estudo Bíblico
@@ -46,46 +48,55 @@
 
         <!-- Grade de Navegação dos Dias -->
         <main>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="flex flex-wrap justify-center gap-8">
                 
                 <!-- Card Dia 1 -->
-                <a href="Estudo.html?dia=1" class="card-bg block p-8 rounded-xl shadow-lg transition-transform transform hover:bg-gray-800">
+                <a href="Estudo.html?dia=1" class="card-bg card-link block p-8 rounded-xl shadow-lg transition-transform transform w-full sm:w-2/5 lg:w-[30%]">
                     <p class="text-sm font-semibold text-blue-400">DIA 1</p>
                     <h3 class="text-2xl font-bold mt-2 text-gray-100">A Parábola do Joio</h3>
                     <p class="text-gray-400 mt-3">Entendendo a convivência do bem e do mal no mundo.</p>
                 </a>
 
                 <!-- Card Dia 2 -->
-                <a href="Estudo.html?dia=2" class="card-bg block p-8 rounded-xl shadow-lg transition-transform transform hover:bg-gray-800">
+                <a href="Estudo.html?dia=2" class="card-bg card-link block p-8 rounded-xl shadow-lg transition-transform transform w-full sm:w-2/5 lg:w-[30%]">
                     <p class="text-sm font-semibold text-blue-400">DIA 2</p>
                     <h3 class="text-2xl font-bold mt-2 text-gray-100">Planos de Esperança</h3>
                     <p class="text-gray-400 mt-3">Confiando nos planos de Deus para um futuro seguro.</p>
                 </a>
 
                 <!-- Card Dia 3 -->
-                <a href="Estudo.html?dia=3" class="card-bg block p-8 rounded-xl shadow-lg transition-transform transform hover:bg-gray-800">
+                <a href="Estudo.html?dia=3" class="card-bg card-link block p-8 rounded-xl shadow-lg transition-transform transform w-full sm:w-2/5 lg:w-[30%]">
                     <p class="text-sm font-semibold text-blue-400">DIA 3</p>
                     <h3 class="text-2xl font-bold mt-2 text-gray-100">Nova Criatura</h3>
                     <p class="text-gray-400 mt-3">Abraçando a transformação completa que Cristo oferece.</p>
                 </a>
 
                 <!-- Card Dia 4 -->
-                <a href="Estudo.html?dia=4" class="card-bg block p-8 rounded-xl shadow-lg transition-transform transform hover:bg-gray-800">
+                <a href="Estudo.html?dia=4" class="card-bg card-link block p-8 rounded-xl shadow-lg transition-transform transform w-full sm:w-2/5 lg:w-[30%]">
                     <p class="text-sm font-semibold text-blue-400">DIA 4</p>
                     <h3 class="text-2xl font-bold mt-2 text-gray-100">A Proteção de Cristo</h3>
                     <p class="text-gray-400 mt-3">Encontrando segurança e refúgio em meio às adversidades.</p>
                 </a>
                 
                 <!-- Card Dia 5 -->
-                <a href="Estudo.html?dia=5" class="card-bg block p-8 rounded-xl shadow-lg transition-transform transform hover:bg-gray-800">
+                <a href="Estudo.html?dia=5" class="card-bg card-link block p-8 rounded-xl shadow-lg transition-transform transform w-full sm:w-2/5 lg:w-[30%]">
                     <p class="text-sm font-semibold text-blue-400">DIA 5</p>
                     <h3 class="text-2xl font-bold mt-2 text-gray-100">O Amor que Constrange</h3>
                     <p class="text-gray-400 mt-3">Descobrindo a força do amor de Deus em nossa vida.</p>
                 </a>
-
-                 <!-- Card Extra (se precisar) -->
-                <div class="bg-gray-800/50 flex items-center justify-center p-8 rounded-xl border-2 border-dashed border-gray-700">
-                    <p class="text-gray-500">Próximo estudo em breve...</p>
+                
+                <!-- Card Dia 6 -->
+                <a href="Estudo.html?dia=6" class="card-bg card-link block p-8 rounded-xl shadow-lg transition-transform transform w-full sm:w-2/5 lg:w-[30%]">
+                    <p class="text-sm font-semibold text-blue-400">DIA 6</p>
+                    <h3 class="text-2xl font-bold mt-2 text-gray-100">Do Poço ao Palácio</h3>
+                    <p class="text-gray-400 mt-3">A soberania de Deus em meio aos desafios.</p>
+                </a>
+                
+                <!-- Card Dia 7 (Bloqueado) -->
+                <div class="card-bg block p-8 rounded-xl shadow-lg w-full sm:w-2/5 lg:w-[30%] cursor-not-allowed">
+                    <p class="text-sm font-semibold text-blue-400">DIA 7</p>
+                    <h3 class="text-2xl font-bold mt-2 text-gray-100">Pai e Filho</h3>
+                    <p class="text-gray-400 mt-3">Explorando a profundidade do nosso relacionamento com Deus.</p>
                 </div>
 
             </div>
@@ -93,7 +104,7 @@
 
         <!-- Rodapé -->
         <footer class="text-center mt-16">
-            <p class="text-gray-500">&copy; 2024 Estudo Bíblico Policial. Todos os direitos reservados.</p>
+            <p class="text-gray-500">&copy; 2025 Estudo Bíblico Policial. Todos os direitos reservados.</p>
         </footer>
 
     </div>
