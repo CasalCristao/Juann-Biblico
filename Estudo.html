@@ -3,103 +3,356 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Estudo Bíblico Policial</title>
+    <title id="page-title">Estudo Bíblico - Tema Diário</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Teko:wght@500;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary-text: #2c3e50;
+            --secondary-text: #34495e;
+            --accent-color: #2980b9;
+            --background-soft: #ecf0f1;
+            --card-background: rgba(255, 255, 255, 0.98);
+            --border-light: #bdc3c7;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --button-bg: #4a90e2;
+            --button-hover-bg: #357ABD;
+        }
+        html { height: 100%; scroll-behavior: smooth; }
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #111827; /* Fundo cinza escuro */
+            line-height: 1.6;
+            color: var(--primary-text);
+            background-color: var(--background-soft);
+            margin: 0;
+            padding: 2rem;
+            box-sizing: border-box;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            overflow-y: auto;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-attachment: fixed;
+            transition: background-image, background-color 0.5s ease-in-out;
         }
-        .header-font {
-            font-family: 'Teko', sans-serif;
+        .bible-container {
+            width: 100%;
+            max-width: 1000px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0;
+            box-sizing: border-box; 
+            border-radius: 1.5rem;
+            box-shadow: 0 20px 40px var(--shadow-color);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+            flex-shrink: 0;
+            background-color: transparent;
         }
-        .card-bg {
-            background-image: url('https://www.transparenttextures.com/patterns/clean-gray-paper.png');
-            background-color: #1F2937;
+        .content-card {
+            background-color: var(--card-background);
+            border-radius: 1.25rem;
+            box-shadow: 0 10px 25px var(--shadow-color);
+            padding: 3rem;
+            max-width: 760px;
+            width: 100%;
+            margin: auto;
+            text-align: center;
+            position: relative;
+            border: 1px solid var(--border-light);
+            box-sizing: border-box;
         }
-        .card-bg:hover {
-            transform: translateY(-5px) scale(1.02);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+        .main-title-text { font-size: 1.5rem; font-weight: 500; color: var(--secondary-text); margin-bottom: 0.5rem; text-align: center; }
+        .day-number-title { font-size: 0.9rem; font-weight: 700; color: var(--primary-text); margin-bottom: 0.5rem; text-align: center; letter-spacing: 0.05em; }
+        .theme-title { font-size: 1.4rem; font-weight: 600; color: var(--secondary-text); margin-bottom: 1.5rem; text-align: center; letter-spacing: 0.02em; }
+        .bible-quote { font-size: 1.25rem; font-style: italic; font-weight: 500; margin-top: 2rem; margin-bottom: 1.2rem; color: var(--secondary-text); line-height: 1.7; padding: 0 1rem; transition: font-size 0.3s ease; }
+        .bible-quote.smaller-quote { font-size: 1.1rem; }
+        .bible-reference { font-weight: 600; color: var(--accent-color); display: block; margin-bottom: 2.5rem; font-size: 1.05rem; text-transform: uppercase; letter-spacing: 0.08em; }
+        .section-title { font-size: 1.5rem; font-weight: 700; color: var(--primary-text); margin-top: 3rem; margin-bottom: 1rem; border-bottom: 2px solid var(--border-light); padding-bottom: 0.6rem; display: inline-block; letter-spacing: 0.03em; }
+        p { font-size: 1.05rem; font-weight: 400; color: var(--primary-text); margin-bottom: 1.5rem; text-align: justify; line-height: 1.7; }
+        .explanation-quote { display: block; background-color: #f8f9fa; border-left: 4px solid var(--accent-color); padding: 1rem 1.5rem; margin: 1.5rem 0; font-style: italic; font-size: 1rem; color: var(--secondary-text); }
+        .tip-item { display: block; text-align: left; font-size: 1.1rem; font-weight: 400; color: var(--primary-text); margin-bottom: 0.6rem; line-height: 1.6; }
+        .tip-item.motivational-message { font-weight: 700; font-size: 1.3rem; color: var(--accent-color); line-height: 1.4; margin-bottom: 1rem; text-align: center; }
+        .tip-item.meditation-text { font-style: italic; font-weight: 500; margin-top: 1rem; line-height: 1.6; text-align: center; }
+        .tip-item.normal-tip { display: flex; align-items: flex-start; margin-bottom: 0.7rem; }
+        .tip-item.normal-tip.smaller-tip { font-size: 0.9rem; line-height: 1.5; }
+        .tip-item.normal-tip .tip-text-content { margin-left: 0.75rem; }
+        .tip-item.normal-tip::before { content: '🌿'; font-size: 1.2rem; line-height: 1.5; color: #27ae60; flex-shrink: 0; }
+        ul { padding-left: 0; margin-top: 1.4rem; list-style: none; }
+        ul li { margin-bottom: 0.5rem; text-align: left; }
+        .nav-button-container { display: flex; justify-content: center; gap: 1.8rem; margin-top: 2rem; margin-bottom: 2.2rem; width: 100%; max-width: 1000px; }
+        .nav-button { background-color: var(--button-bg); color: white; padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: 600; font-size: 1.05rem; transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease; cursor: pointer; border: none; flex-grow: 1; max-width: 220px; text-align: center; }
+        .nav-button:hover { background-color: var(--button-hover-bg); transform: translateY(-2px); }
+        .nav-button:disabled { background-color: #cccccc; cursor: not-allowed; transform: translateY(0); }
+        .music-player-container { margin-top: 2.5rem; margin-bottom: 2rem; width: 100%; max-width: 600px; text-align: center; }
+        .music-player-container iframe { width: 100%; height: 330px; border-radius: 0.85rem; box-shadow: 0 5px 15px rgba(0,0,0,0.2); border: none; }
+        .music-player-container p { font-size: 0.95rem; font-style: italic; color: var(--secondary-text); margin-top: 0.8rem; text-align: center; }
+        .latin-prayer-container { width: auto; text-align: center; margin: 3rem 0 2rem 0; font-family: 'Cinzel', serif; color: white; font-size: 1.2rem; font-weight: 400; text-shadow: none; }
+        .meditation-intro { padding-bottom: 2rem; margin-bottom: 2rem; }
+
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            .bible-container { padding: 1rem; min-height: auto; margin-top: 1rem; margin-bottom: 1rem; }
+            .content-card { padding: 1.5rem; }
+            .main-title-text { font-size: 1.2rem; }
+            .day-number-title { font-size: 0.9rem; }
+            .theme-title { font-size: 1.1rem; }
+            .bible-quote { font-size: 1.1rem; margin-top: 1.2rem; margin-bottom: 0.8rem; }
+            .bible-quote.smaller-quote { font-size: 1.0rem; }
+            .bible-reference { font-size: 0.95rem; margin-bottom: 1.5rem; }
+            .section-title { font-size: 1.2rem; margin-top: 2rem; margin-bottom: 0.8rem; }
+            p { font-size: 0.95rem; margin-bottom: 1rem; }
+            .explanation-quote { font-size: 0.9rem; padding: 0.8rem 1.2rem; }
+            .tip-item { font-size: 0.95rem; margin-bottom: 0.7rem; }
+            .tip-item.normal-tip.smaller-tip { font-size: 0.85rem; }
+            .tip-item.normal-tip::before { display: block; }
+            .tip-item.motivational-message::before, .tip-item.meditation-text::before { display: none; }
+            .nav-button-container { flex-direction: column; gap: 0.75rem; }
+            .nav-button { max-width: none; padding: 0.65rem 1.2rem; font-size: 1.05rem; }
+            .music-player-container { max-width: 100%; margin-top: 1.5rem; margin-bottom: 1.5rem; }
+            .music-player-container iframe { height: 220px; }
+            .latin-prayer-container { font-size: 1rem; }
         }
     </style>
 </head>
-<body class="text-white">
-
-    <div class="container mx-auto px-6 py-12">
-        
-        <!-- Cabeçalho -->
-        <header class="text-center mb-12">
-            <div class="inline-block bg-blue-600 p-3 mb-4 rounded-lg">
-                <svg class="w-8 h-10 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 32" fill="currentColor">
-                   <path d="M10.5 0h3v12h6v3h-6v17h-3V15H4.5v-3h6V0z" />
-                </svg>
+<body>
+    <div class="bible-container">
+        <div class="content-card">
+            
+            <div id="meditation-section" class="hidden">
+                 <div class="meditation-intro">
+                    <h3 class="section-title" id="meditation-title"></h3>
+                    <p id="meditation-text"></p>
+                    <div class="music-player-container">
+                        <iframe id="meditation-video" src="" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <button id="start-study-btn" class="nav-button mx-auto mt-4">Iniciar Estudo</button>
+                </div>
             </div>
-            <h1 class="header-font text-6xl md:text-8xl font-bold tracking-wider uppercase text-gray-100">
-                Estudo Bíblico
-            </h1>
-            <h2 class="header-font text-5xl md:text-7xl font-semibold tracking-wider uppercase text-blue-400">
-                Policial
-            </h2>
-            <p class="mt-4 text-gray-400 max-w-2xl mx-auto">
-                Uma jornada de 7 dias para fortalecer a fé e encontrar propósito e proteção na Palavra de Deus. Selecione um dia para começar.
-            </p>
-        </header>
 
-        <!-- Grade de Navegação dos Dias -->
-        <main>
-            <div class="flex flex-wrap justify-center gap-8">
+            <div id="study-content">
+                <p class="main-title-text" id="main-title-text-el"></p>
+                <p class="day-number-title" id="day-number-title-el"></p>
+                <p class="theme-title" id="theme-title-el"></p>
+
+                <p class="bible-quote" id="bible-quote-text"></p>
+                <p class="bible-reference" id="bible-reference-text"></p>
+
+                <h3 class="section-title">Explicação:</h3>
+                <p id="brief-explanation-text"></p>
+
+                <h3 class="section-title" id="prayer-title">Oração:</h3>
+                <p id="prayer-text"></p>
+
+                <h3 class="section-title" id="bonus-espiritual-title">Dicas para o seu dia</h3>
+                <ul id="tips-list"></ul>
                 
-                <a href="Estudos.html?dia=1" class="card-bg card-link block p-8 rounded-xl shadow-lg transition-transform transform w-full sm:w-2/5 lg:w-[30%]">
-                    <p class="text-sm font-semibold text-blue-400">DIA 1</p>
-                    <h3 class="text-2xl font-bold mt-2 text-gray-100">A Parábola do Joio</h3>
-                    <p class="text-gray-400 mt-3">Entendendo a convivência do bem e do mal no mundo.</p>
-                </a>
-
-                <a href="Estudos.html?dia=2" class="card-bg card-link block p-8 rounded-xl shadow-lg transition-transform transform w-full sm:w-2/5 lg:w-[30%]">
-                    <p class="text-sm font-semibold text-blue-400">DIA 2</p>
-                    <h3 class="text-2xl font-bold mt-2 text-gray-100">Planos de Esperança</h3>
-                    <p class="text-gray-400 mt-3">Confiando nos planos de Deus para um futuro seguro.</p>
-                </a>
-
-                <a href="Estudos.html?dia=3" class="card-bg card-link block p-8 rounded-xl shadow-lg transition-transform transform w-full sm:w-2/5 lg:w-[30%]">
-                    <p class="text-sm font-semibold text-blue-400">DIA 3</p>
-                    <h3 class="text-2xl font-bold mt-2 text-gray-100">Nova Criatura</h3>
-                    <p class="text-gray-400 mt-3">Abraçando a transformação completa que Cristo oferece.</p>
-                </a>
-
-                <a href="Estudos.html?dia=4" class="card-bg card-link block p-8 rounded-xl shadow-lg transition-transform transform w-full sm:w-2/5 lg:w-[30%]">
-                    <p class="text-sm font-semibold text-blue-400">DIA 4</p>
-                    <h3 class="text-2xl font-bold mt-2 text-gray-100">A Proteção de Cristo</h3>
-                    <p class="text-gray-400 mt-3">Encontrando segurança e refúgio em meio às adversidades.</p>
-                </a>
-                
-                <a href="Estudos.html?dia=5" class="card-bg card-link block p-8 rounded-xl shadow-lg transition-transform transform w-full sm:w-2/5 lg:w-[30%]">
-                    <p class="text-sm font-semibold text-blue-400">DIA 5</p>
-                    <h3 class="text-2xl font-bold mt-2 text-gray-100">O Amor que Constrange</h3>
-                    <p class="text-gray-400 mt-3">Descobrindo a força do amor de Deus em nossa vida.</p>
-                </a>
-                
-                <a href="Estudos.html?dia=6" class="card-bg card-link block p-8 rounded-xl shadow-lg transition-transform transform w-full sm:w-2/5 lg:w-[30%]">
-                    <p class="text-sm font-semibold text-blue-400">DIA 6</p>
-                    <h3 class="text-2xl font-bold mt-2 text-gray-100">Do Poço ao Palácio</h3>
-                    <p class="text-gray-400 mt-3">A soberania de Deus em meio aos desafios.</p>
-                </a>
-                
-                <a href="Estudos.html?dia=7" class="card-bg card-link block p-8 rounded-xl shadow-lg transition-transform transform w-full sm:w-2/5 lg:w-[30%]">
-                    <p class="text-sm font-semibold text-blue-400">DIA 7</p>
-                    <h3 class="text-2xl font-bold mt-2 text-gray-100">Pai e Filho</h3>
-                    <p class="text-gray-400 mt-3">Explorando a profundidade do nosso relacionamento com Deus.</p>
-                </a>
-
+                <div id="video-container" class="music-player-container" style="display: none;">
+                    <iframe id="youtube-player-iframe" src="" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    <p>Vídeo inspirador para complementar o estudo de hoje.</p>
+                </div>
             </div>
-        </main>
-
-        <footer class="text-center mt-16">
-            <p class="text-gray-500">&copy; 2025 Estudo Bíblico Policial. Todos os direitos reservados.</p>
-        </footer>
-
+        </div>
     </div>
 
+    <div class="nav-button-container">
+        <button id="prev-day-btn" class="nav-button">Dia Anterior</button>
+        <a id="next-day-btn" class="nav-button" href="fim.html">Conclusão</a>
+    </div>
+
+    <script>
+        const TOTAL_DIAS = 7;
+
+        const bibleStudyData = [
+            // Dias 1 a 5
+            { dayNumber: 1, theme: "A Parábola do Joio 🌾", verseQuote: "Deixai crescer ambos juntos até a ceifa...", prayer: "Senhor, ajuda-me...", tips: ["Pratique a paciência..."], backgroundColor: "#FFFFFF" },
+            { dayNumber: 2, theme: "Planos de Esperança e Futuro 🌟", verseQuote: "Porque sou eu que conheço os planos...", prayer: "Amado Pai...", tips: ["Que a força..."], videoUrl: "https://www.youtube.com/watch?v=oQXZZcWtOQw", backgroundColor: "#f5f5dc" },
+            { dayNumber: 3, theme: "Nova Criatura 🦋", verseQuote: "Assim que, se alguém está em Cristo...", prayer: "Pai Amado...", tips: ["Reflita sobre o 'velho homem'...", "Leia o Salmo 25..."], backgroundColor: "#e0e0e0" },
+            { dayNumber: 4, theme: "A Proteção de Cristo 🛡️", verseQuote: "Bem-aventurados os perseguidos...", prayer: "Pai celestial...", tips: ["Pense em uma área...", "Ore para que a graça..."], backgroundColor: "#526D82" },
+            { dayNumber: 5, theme: "O Amor que Constrange 🤗", verseQuote: "Pois o amor de Cristo nos constrange...", prayer: "Pai, que o Teu amor...", tips: ["Reserve um momento de descanso...", "Reserve um momento para declarar..."], videoUrl: "https://www.youtube.com/watch?v=8W0kyCy0Eng", backgroundColor: "#D3D3D3" },
+            // Dia 6
+            {
+                dayNumber: 6,
+                theme: "Do Poço ao Palácio - A Soberania de Deus 👑",
+                verseQuote: "José, porém, lhes disse: 'Não tenham medo. Estaria eu no lugar de Deus? Vocês planejaram o mal contra mim, mas Deus o tornou em bem, para que hoje fosse preservada a vida de muitos. Portanto, não tenham medo. Eu sustentarei vocês e seus filhos'. E assim os tranquilizou e lhes falou ao coração.",
+                verseReference: "Gênesis 50:19-21",
+                briefExplanation: "A história de José é o arquétipo da superação. Traído, vendido como escravo, falsamente acusado e esquecido na prisão, ele enfrentou uma série de desafios que pareciam destruir qualquer esperança. No entanto, em cada etapa, Deus estava a trabalhar nos bastidores. Este tema explora como a soberania de Deus pode transformar as piores intenções humanas no cumprimento do Seu propósito divino. A jornada de José ensina-nos que os nossos maiores desafios podem ser o caminho para a nossa maior missão, e que um coração que perdoa é essencial para ver o plano de Deus se cumprir.",
+                prayer: "Pai, como José, muitas vezes não compreendo o caminho pelo qual me levas. Nos momentos de traição, injustiça ou esquecimento, ajuda-me a confiar que o Teu plano é maior que a minha dor. Que eu possa ver a Tua mão a transformar o mal em bem, não apenas para mim, mas para abençoar outros. Dá-me um coração que perdoa e confia na Tua soberania. Amém.",
+                tips: ["Pense numa grande dificuldade do seu passado. Consegue identificar pequenos pontos onde, mesmo sem perceber na altura, Deus o estava a proteger ou a preparar para o futuro? Agradeça por essa revelação.", "Existe alguma 'dívida' de perdão no seu coração? Ore especificamente por essa situação, pedindo a Deus a força para liberar a ofensa, não porque a outra pessoa mereça, mas porque você confia no propósito redentor de Deus."],
+                videoUrl: "https://www.youtube.com/watch?v=0eAArVuO5P8",
+                backgroundColor: "#8b0000"
+            },
+            // Dia 7
+            {
+                dayNumber: 7,
+                theme: "Pai e Filho",
+                verseQuote: "Mas, quando chegou a plenitude do tempo, Deus enviou seu Filho, nascido de mulher, nascido debaixo da lei, a fim de redimir os que estavam sob a lei, para que recebêssemos a adoção de filhos. E, porque vocês são filhos, Deus enviou o Espírito de seu Filho ao nosso coração, que clama: 'Aba, Pai'.",
+                verseReference: "Gálatas 4:4-6",
+                briefExplanation: `Este é o clímax da nossa jornada: entender que, através da fé em Jesus, somos mais do que criaturas ou servos; somos adotados como filhos e filhas de Deus. Essa nova identidade muda tudo. Deixamos de ser órfãos espirituais para termos um Pai que nos ama, nos protege e nos dá uma herança eterna. Como afirma Paulo, não recebemos um espírito de escravidão para novamente temermos, mas o Espírito de adoção!<div class="explanation-quote"><b>Romanos 8:15:</b> "Pois vocês não receberam um espírito que os escravize para novamente temerem, mas receberam o Espírito que os adota como filhos, por meio do qual clamamos: 'Aba, Pai'."</div>É a mais profunda e segura relação que podemos ter.`,
+                prayer: "Aba, Pai. Hoje eu venho a Ti não como um servo distante, mas como Teu filho amado. Obrigado por me teres adotado através do sacrifício de Jesus. Enche-me com o Teu Espírito para que eu possa viver com a confiança e a segurança de quem pertence à Tua família. Que a minha vida honre o nome que agora carrego. Amém.",
+                tips: ["Hoje, em momentos de oração, comece por simplesmente dizer 'Aba, Pai'. Sinta o peso e a intimidade dessa verdade.", "Como um filho de Deus, como você pode tratar os outros hoje com a mesma graça e amor que o Pai lhe deu?"],
+                meditationVideoUrl: "https://www.youtube.com/watch?v=Cc-SuLtycAo",
+                backgroundColor: "#000000"
+            }
+        ];
+
+        let currentDayIndex = 0;
+
+        function loadDayContent(dayIndex) {
+            currentDayIndex = dayIndex;
+            const data = bibleStudyData[dayIndex];
+            
+            const meditationSection = document.getElementById('meditation-section');
+            const studyContent = document.getElementById('study-content');
+            const navButtons = document.querySelector('.nav-button-container');
+
+            const latinPrayerContainer = document.querySelector('.latin-prayer-container');
+            if (latinPrayerContainer) latinPrayerContainer.remove();
+
+            // Reset visibility
+            meditationSection.classList.add('hidden');
+            studyContent.style.display = 'block';
+            navButtons.style.display = 'flex';
+
+            const mainVideoContainer = document.getElementById('video-container');
+            if(mainVideoContainer) mainVideoContainer.style.display = 'none';
+
+            if (data.dayNumber === 7) {
+                studyContent.style.display = 'none';
+                navButtons.style.display = 'none';
+                meditationSection.classList.remove('hidden');
+                document.getElementById('meditation-title').innerHTML = "A.M.D.G";
+                document.getElementById('meditation-text').innerHTML = `<p style="text-align: center;"><strong>A.M.D.G</strong></p>Chegamos ao nosso último dia. Que esta semana tenha realmente fortalecido sua fé e renovado o seu coração. Cada tema foi cuidadosamente pensado para levar uma mensagem de esperança, paz e propósito.<br><br>Encontre um lugar tranquilo, coloque os fones 🎧, respire fundo e <b>play</b>. Feche seus olhos e permita que esta canção fale com você.<br><br><p style="text-align: center;"><strong>Jesus te ama ❤️</strong></p>`;
+                
+                try {
+                    const url = new URL(data.meditationVideoUrl);
+                    let videoId = url.searchParams.get('v');
+                    if (videoId) {
+                        document.getElementById('meditation-video').src = `https://www.youtube.com/embed/${videoId}`;
+                    }
+                } catch(e) { console.error("URL do YouTube inválida:", data.meditationVideoUrl, e); }
+                
+            } else if (data.videoUrl) {
+                try {
+                    const url = new URL(data.videoUrl);
+                    let videoId = url.searchParams.get('v');
+                    if (videoId) {
+                        const youtubeIframe = document.getElementById('youtube-player-iframe');
+                        if(youtubeIframe && mainVideoContainer) {
+                             youtubeIframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=0&mute=0&controls=1&loop=1&playlist=${videoId}`;
+                             mainVideoContainer.style.display = 'block';
+                        }
+                    }
+                } catch(e) { console.error("URL do YouTube inválida:", data.videoUrl, e); }
+            }
+
+            document.getElementById('page-title').innerText = `Estudo Bíblico - Dia ${data.dayNumber} - ${data.theme}`;
+            document.getElementById('main-title-text-el').innerText = `Estudo Bíblico - ${data.dayNumber} de ${TOTAL_DIAS} Dias`;
+            document.getElementById('day-number-title-el').innerText = `DIA ${data.dayNumber}`;
+            document.getElementById('theme-title-el').innerText = data.theme;
+
+            const quoteEl = document.getElementById('bible-quote-text');
+            quoteEl.innerText = `"${data.verseQuote}"`;
+            quoteEl.classList.remove('smaller-quote');
+            
+            document.getElementById('bible-reference-text').innerText = data.verseReference;
+            document.getElementById('brief-explanation-text').innerHTML = data.briefExplanation;
+            
+            const prayerTitleEl = document.getElementById('prayer-title');
+            const prayerTextEl = document.getElementById('prayer-text');
+            prayerTitleEl.innerText = "Oração";
+            prayerTextEl.innerText = data.prayer;
+
+            const tipsList = document.getElementById('tips-list');
+            tipsList.innerHTML = '';
+            
+            if (data.backgroundColor) {
+                document.body.style.backgroundImage = 'none';
+                document.body.style.backgroundColor = data.backgroundColor;
+            }
+
+            document.getElementById('bonus-espiritual-title').innerText = "Dicas para o seu dia";
+            document.querySelector('#brief-explanation-text').previousElementSibling.innerText = "Explicação";
+            
+            if(data.dayNumber === 2 || data.dayNumber === 3) {
+                 document.getElementById('bonus-espiritual-title').innerText = "Bônus Espiritual ✨";
+            } else if (data.dayNumber >= 4) {
+                 document.getElementById('bonus-espiritual-title').innerText = "Reflexão e Prática ✍️";
+            }
+
+            data.tips.forEach(tip => {
+                const li = document.createElement('li');
+                li.className = 'tip-item normal-tip';
+                li.innerHTML = `<div class="tip-text-content">${tip}</div>`;
+                if (data.dayNumber >= 4) { li.classList.add('smaller-tip'); li.style.alignItems = 'center'; }
+                tipsList.appendChild(li);
+            });
+            
+            if (data.dayNumber === 4) {
+                quoteEl.classList.add('smaller-quote');
+                
+                const prayerContainer = document.createElement('div');
+                prayerContainer.className = 'latin-prayer-container';
+                const prayerLines = [
+                    "Crux Sacra Sit Mihi Lux", "Non Draco Sit Mihi Dux", "Vade Retro Sátana",
+                    "Nunquam Suade Mihi Vana", "Sunt Mala Quae Libas", "Ipse Venena Bibas"
+                ];
+                prayerLines.forEach(line => {
+                    const p = document.createElement('p');
+                    p.style.margin = '0.2rem 0';
+                    p.innerText = line;
+                    prayerContainer.appendChild(p);
+                });
+                document.querySelector('.nav-button-container').before(prayerContainer);
+            }
+
+            updateNavigationButtons();
+        }
+
+        function updateNavigationButtons() {
+            const prevBtn = document.getElementById('prev-day-btn');
+            const nextBtn = document.getElementById('next-day-btn');
+            
+            prevBtn.disabled = (currentDayIndex === 0);
+            nextBtn.disabled = (currentDayIndex >= bibleStudyData.length - 1);
+        }
+
+        document.getElementById('start-study-btn').addEventListener('click', () => {
+            document.getElementById('meditation-section').classList.add('hidden');
+            document.getElementById('study-content').style.display = 'block';
+            document.querySelector('.nav-button-container').style.display = 'flex';
+        });
+
+        document.getElementById('prev-day-btn').addEventListener('click', () => {
+            if (currentDayIndex > 0) {
+                currentDayIndex--;
+                loadDayContent(currentDayIndex);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+
+        document.getElementById('next-day-btn').addEventListener('click', () => {
+            if (currentDayIndex < bibleStudyData.length - 1) {
+                currentDayIndex++;
+                loadDayContent(currentDayIndex);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            let dia = parseInt(urlParams.get('dia')) - 1;
+            if (isNaN(dia) || dia < 0 || dia >= TOTAL_DIAS) {
+                dia = 0;
+            }
+            loadDayContent(dia);
+        });
+    </script>
 </body>
 </html>
