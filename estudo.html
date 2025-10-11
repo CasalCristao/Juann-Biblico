@@ -18,6 +18,8 @@
             --shadow-color: rgba(0, 0, 0, 0.1);
             --button-bg: #008080; /* Teal para os botões */
             --button-hover-bg: #006666;
+            --locked-color: #7f8c8d; /* Cinza para elementos bloqueados */
+            --locked-bg: rgba(44, 62, 80, 0.9); /* Azul escuro com transparência */
         }
         html { height: 100%; scroll-behavior: smooth; }
         body {
@@ -88,13 +90,33 @@
         ul li { margin-bottom: 0.5rem; text-align: left; }
         .nav-button-container { display: flex; justify-content: center; gap: 1.8rem; margin-top: 2rem; margin-bottom: 2.2rem; width: 100%; max-width: 1000px; }
         .nav-button { background-color: var(--button-bg); color: white; padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: 600; font-size: 1.05rem; transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease; cursor: pointer; border: none; flex-grow: 1; max-width: 220px; text-align: center; }
-        .nav-button:hover { background-color: var(--button-hover-bg); transform: translateY(-2px); }
+        .nav-button:hover:not(:disabled) { background-color: var(--button-hover-bg); transform: translateY(-2px); }
         .nav-button:disabled { background-color: #cccccc; cursor: not-allowed; transform: translateY(0); }
         .music-player-container { margin-top: 2.5rem; margin-bottom: 2rem; width: 100%; max-width: 600px; text-align: center; }
         .music-player-container iframe { width: 100%; height: 330px; border-radius: 0.85rem; box-shadow: 0 5px 15px rgba(0,0,0,0.2); border: none; }
         .music-player-container p { font-size: 0.95rem; font-style: italic; color: var(--secondary-text); margin-top: 0.8rem; text-align: center; }
-        .latin-prayer-container { width: auto; text-align: center; margin: 3rem 0 2rem 0; font-family: 'Cinzel', serif; color: white; font-size: 1.2rem; font-weight: 400; text-shadow: none; }
+        .latin-prayer-container { width: auto; text-align: center; margin: 3rem 0 2rem 0; font-family: 'Cinzel', serif; color: var(--secondary-text); font-size: 1.2rem; font-weight: 400; text-shadow: none; }
         .meditation-intro { padding-bottom: 2rem; margin-bottom: 2rem; }
+
+        .locked-day-message {
+            background-color: var(--locked-bg);
+            color: white;
+            padding: 3rem;
+            border-radius: 1.25rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 600;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 300px;
+        }
+        .locked-day-message svg {
+            color: var(--locked-color);
+            margin-bottom: 1rem;
+        }
 
         @media (max-width: 768px) {
             body { padding: 1rem; }
@@ -118,6 +140,7 @@
             .music-player-container { max-width: 100%; margin-top: 1.5rem; margin-bottom: 1.5rem; }
             .music-player-container iframe { height: 220px; }
             .latin-prayer-container { font-size: 1rem; }
+            .locked-day-message { padding: 2rem; font-size: 1.2rem; min-height: 250px; }
         }
     </style>
 </head>
@@ -136,6 +159,15 @@
                 </div>
             </div>
 
+            <div id="locked-day-section" class="hidden">
+                <div class="locked-day-message">
+                    <svg class="w-16 h-16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 17a2 2 0 002-2V9a2 2 0 00-2-2H8a2 2 0 00-2 2v6a2 2 0 002 2h4zm-2-7h4v5h-4v-5zm-2-2h8V7a2 2 0 00-2-2H8a2 2 0 00-2 2v1zm7-4h-4c-1.1 0-2 .9-2 2v1H5V7c0-1.1.9-2 2-2h4c1.1 0 2 .9 2 2v1h-2V7a.999.999 0 00-1-1zm6 10h-1c-1.1 0-2-.9-2-2v-4c0-1.1.9-2 2-2h1c1.1 0 2 .9 2 2v4c0 1.1-.9 2-2 2z"/>
+                    </svg>
+                    <p>Este dia ainda está bloqueado. Volte mais tarde!</p>
+                </div>
+            </div>
+
             <div id="study-content">
                 <p class="main-title-text" id="main-title-text-el"></p>
                 <p class="day-number-title" id="day-number-title-el"></p>
@@ -149,6 +181,11 @@
 
                 <h3 class="section-title" id="prayer-title">Oração:</h3>
                 <p id="prayer-text"></p>
+
+                <div id="normal-video-player" class="music-player-container hidden">
+                    <iframe id="youtube-player-iframe" src="" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    <p>Reflexão musical para o seu dia.</p>
+                </div>
 
                 <h3 class="section-title" id="bonus-espiritual-title">Dicas para o seu dia</h3>
                 <ul id="tips-list"></ul>
@@ -166,19 +203,21 @@
 
     <script>
         const TOTAL_DIAS = 7;
+        let maxUnlockedDay = 1; // Controla qual é o dia máximo desbloqueado
 
         const bibleStudyData = [
             {
                 dayNumber: 1,
-                theme: "Chamados para Unidade 🤝",
-                verseQuote: "Assim, já não são dois, mas uma só carne. Portanto, o que Deus uniu, ninguém separe.",
-                verseReference: "Mateus 19:6",
-                briefExplanation: "O casamento é uma instituição divina, uma aliança sagrada onde dois indivíduos se tornam um. Este versículo de Mateus ressalta a profundidade e a permanência dessa união. Para Juann e Juliana, compreender que a unidade no casamento não é apenas um ideal romântico, mas um propósito estabelecido por Deus, é o fundamento para um amor com propósito. Essa unidade se manifesta na harmonia de pensamentos, objetivos, e na disposição de se apoiar mutuamente, buscando sempre a vontade de Deus para o casal.",
-                prayer: "Amado Pai, agradecemos pela Tua sabedoria em instituir o casamento. Ajuda-nos, Juann e Juliana, a viver cada dia como uma só carne, honrando a aliança que fizemos diante de Ti. Que nossa unidade seja um testemunho do Teu amor e propósito em nossas vidas. Capacita-nos a construir juntos um relacionamento que Te glorifique. Amém.",
+                theme: "Chamados para Unidade no Amor 💕",
+                verseQuote: "Acima de tudo, porém, revistam-se do amor, que é o elo perfeito da unidade.",
+                verseReference: "Colossenses 3:14",
+                briefExplanation: "Para Juann e Juliana, namorados, a base de um amor com propósito é a unidade, um presente que Deus nos dá. Este versículo de Colossenses nos lembra que o amor não é apenas um sentimento, mas uma decisão que nos une. Construir essa unidade desde o namoro significa aprender a respeitar as diferenças, perdoar com facilidade e crescer juntos na fé. É através do amor que superamos os desafios e fortalecemos os laços que Deus está tecendo entre vocês, visando um futuro, se for da vontade d'Ele.",
+                prayer: "Amado Pai, agradecemos pela Tua sabedoria em nos guiar neste relacionamento. Ajuda-nos, Juann e Juliana, a viver cada dia buscando a unidade no amor, honrando a Ti em nossa jornada. Que nosso relacionamento seja um testemunho da Tua graça e propósito. Capacita-nos a construir juntos um futuro que Te glorifique. Amém.",
                 tips: [
-                    "Reservem um momento do dia para orar juntos, unindo seus corações e intenções diante de Deus.",
-                    "Conversem sobre um objetivo comum para a semana e como podem trabalhar juntos para alcançá-lo, fortalecendo a união de propósito."
+                    "Conversem abertamente sobre suas expectativas para o relacionamento e para o futuro. A transparência fortalece a união.",
+                    "Encontrem uma atividade que ambos gostem e dediquem um tempo de qualidade para ela esta semana, cultivando a alegria juntos."
                 ],
+                videoUrl: "https://www.youtube.com/watch?v=s7jXASBWwwI", // Música para o dia 1
                 backgroundColor: "#F7CAC9" // Tons de rosa claro para suavidade e união
             },
             {
@@ -186,7 +225,7 @@
                 theme: "Comunicação que Edifica 💬",
                 verseQuote: "Nenhuma palavra torpe saia da boca de vocês, mas apenas a que for boa para edificar, conforme a necessidade, para que transmita graça aos que a ouvem.",
                 verseReference: "Efésios 4:29",
-                briefExplanation: "A comunicação é a ponte entre dois corações. Em um casamento com propósito, as palavras não são apenas trocadas, mas são ferramentas para edificar, encorajar e transmitir graça. Este versículo de Efésios nos lembra da importância de escolhermos nossas palavras com sabedoria, evitando o que degrada e priorizando o que constrói. Para Juann e Juliana, isso significa praticar a escuta ativa, expressar sentimentos de forma respeitosa e ser intencional em afirmar o valor um do outro, mesmo em meio a desacordos. Uma comunicação saudável é vital para o crescimento e a profundidade do amor.",
+                briefExplanation: "A comunicação é a ponte entre dois corações. Em um namoro com propósito, as palavras não são apenas trocadas, mas são ferramentas para edificar, encorajar e transmitir graça. Este versículo de Efésios nos lembra da importância de escolhermos nossas palavras com sabedoria, evitando o que degrada e priorizando o que constrói. Para Juann e Juliana, isso significa praticar a escuta ativa, expressar sentimentos de forma respeitosa e ser intencional em afirmar o valor um do outro, mesmo em meio a desacordos. Uma comunicação saudável é vital para o crescimento e a profundidade do amor, preparando o terreno para um futuro sólido.",
                 prayer: "Senhor, pedimos que a Tua graça transborde em nossa comunicação. Ajuda-nos, Juann e Juliana, a sermos cuidadosos com nossas palavras, para que elas sempre edifiquem e tragam vida ao nosso relacionamento. Que o Teu Espírito Santo nos guie para ouvirmos com amor e falarmos com sabedoria. Amém.",
                 tips: [
                     "Dediquem 10 minutos hoje para uma 'conversa intencional', onde cada um compartilha um ponto positivo do dia do outro.",
@@ -200,11 +239,11 @@
                 theme: "Finanças com Propósito 💰",
                 verseQuote: "E o meu Deus suprirá todas as necessidades de vocês, de acordo com as suas gloriosas riquezas em Cristo Jesus.",
                 verseReference: "Filipenses 4:19",
-                briefExplanation: "As finanças são uma área que pode gerar muita tensão ou grande unidade em um casamento. Em um amor com propósito, Juann e Juliana entendem que os recursos são uma bênção de Deus e devem ser administrados em conjunto, com sabedoria e alinhamento aos planos divinos. Este versículo de Filipenses nos lembra que Deus é o nosso provedor supremo. Gerenciar as finanças como um casal com propósito significa orar juntos sobre as decisões financeiras, estabelecer um orçamento que reflita seus valores e contribuir para o Reino de Deus, confiando que Ele suprirá todas as suas necessidades.",
-                prayer: "Pai, reconhecemos que tudo vem de Ti. Ajuda-nos, Juann e Juliana, a sermos bons mordomos dos recursos que nos confias. Dá-nos sabedoria para gerenciar nossas finanças com propósito, buscando primeiro o Teu Reino e confiando em Tua provisão. Que nossas decisões financeiras reflitam nossa fé em Ti. Amém.",
+                briefExplanation: "As finanças são uma área que pode gerar muita tensão ou grande unidade em um relacionamento. Em um amor com propósito, Juann e Juliana entendem que os recursos são uma bênção de Deus e devem ser administrados individualmente com sabedoria, mas com a perspectiva de um futuro compartilhado. Este versículo de Filipenses nos lembra que Deus é o nosso provedor supremo. Gerenciar as finanças individualmente, mas com transparência e diálogo no namoro, significa orar juntos sobre suas decisões financeiras, e contribuir para o Reino de Deus, confiando que Ele suprirá todas as suas necessidades, preparando-os para o que virá.",
+                prayer: "Pai, reconhecemos que tudo vem de Ti. Ajuda-nos, Juann e Juliana, a sermos bons mordomos dos recursos que nos confias individualmente, mas com visão de futuro. Dá-nos sabedoria para gerenciar nossas finanças com propósito, buscando primeiro o Teu Reino e confiando em Tua provisão. Que nossas decisões financeiras reflitam nossa fé em Ti. Amém.",
                 tips: [
-                    "Sentem-se e conversem abertamente sobre suas visões e planos financeiros para o futuro. Encontrem um terreno comum.",
-                    "Escolham uma causa ou ministério que desejam apoiar juntos com uma oferta, praticando a generosidade."
+                    "Conversem abertamente sobre seus hábitos e metas financeiras pessoais. A transparência é essencial para construir confiança.",
+                    "Escolham uma causa ou ministério que desejam apoiar juntos com uma oferta, praticando a generosidade e a fé."
                 ],
                 backgroundColor: "#F0E68C" // Amarelo dourado para prosperidade e bênção
             },
@@ -213,40 +252,40 @@
                 theme: "Servindo Juntos 🙌",
                 verseQuote: "Cada um exerça o dom que recebeu para servir aos outros, administrando fielmente a graça de Deus em suas múltiplas formas.",
                 verseReference: "1 Pedro 4:10",
-                briefExplanation: `Um amor com propósito se estende para além do casal, impactando o mundo ao redor. Este versículo de 1 Pedro desafia Juann e Juliana a identificar e usar os dons que Deus lhes deu para servir uns aos outros e à comunidade. Servir juntos fortalece o vínculo do casal e dá um significado maior à sua união. Seja em casa, na igreja, no trabalho ou na comunidade, encontrar maneiras de ser uma bênção para os outros é uma expressão poderosa do amor de Cristo através do casamento.`,
-                prayer: "Senhor, revela-nos, Juann e Juliana, os dons que nos confiaste. Que possamos usá-los fielmente para Te servir e abençoar aqueles ao nosso redor. Abre nossos olhos para as oportunidades de servir juntos e que nosso casamento seja um canal da Tua graça e amor para o mundo. Amém.",
+                briefExplanation: `Um amor com propósito se estende para além do casal, impactando o mundo ao redor. Este versículo de 1 Pedro desafia Juann e Juliana a identificar e usar os dons que Deus lhes deu para servir uns aos outros, na família, na igreja e na comunidade. Servir juntos fortalece o vínculo do casal e dá um significado maior à sua união, mesmo no namoro. Encontrar maneiras de ser uma bênção para os outros é uma expressão poderosa do amor de Cristo através do relacionamento de vocês, preparando o caminho para uma vida de serviço mútuo e com propósito.`,
+                prayer: "Senhor, revela-nos, Juann e Juliana, os dons que nos confiaste. Que possamos usá-los fielmente para Te servir e abençoar aqueles ao nosso redor. Abre nossos olhos para as oportunidades de servir juntos e que nosso relacionamento seja um canal da Tua graça e amor para o mundo. Amém.",
                 tips: [
                     "Identifiquem uma pequena ação de serviço que possam fazer juntos hoje, seja para um familiar, amigo ou vizinho.",
-                    "Conversem sobre como seus dons individuais podem se complementar para servir a Deus de forma mais eficaz como casal."
+                    "Conversem sobre como seus dons individuais podem se complementar para servir a Deus de forma mais eficaz como casal, mesmo no namoro."
                 ],
                 backgroundColor: "#AFEEEE" // Azul turquesa para serviço e fluidez
             },
             {
                 dayNumber: 5,
                 theme: "Intimidade com Intenção ❤️",
-                verseQuote: "Assim, eles já não são dois, mas uma só carne. Portanto, o que Deus uniu, ninguém o separe.",
-                verseReference: "Gênesis 2:24",
-                briefExplanation: `A intimidade em um casamento com propósito vai além do aspecto físico; abrange a conexão emocional, espiritual e mental. O versículo de Gênesis 2:24 nos lembra que essa união é tão profunda que os dois se tornam 'uma só carne'. Para Juann e Juliana, cultivar a intimidade intencionalmente significa priorizar o tempo de qualidade juntos, compartilhar seus corações, sonhos e medos, e buscar a Deus em conjunto. É um convite a nutrir o relacionamento em todas as suas dimensões, refletindo o amor e a unidade que Cristo deseja para o casal.
-<div class="explanation-quote"><b>Provérbios 4:23:</b> "Acima de tudo, guarde o seu coração, pois dele procedem as fontes da vida."</div>
-Proteger a intimidade do casal é proteger o coração do casamento.`,
-                prayer: "Pai, que a nossa intimidade seja um reflexo do Teu amor. Ajuda-nos, Juann e Juliana, a cultivarmos uma conexão profunda em todas as áreas de nossa vida, buscando-Te juntos e compartilhando nossos corações sem reservas. Que nosso amor seja intencional e que nossa união seja cada vez mais fortalecida em Ti. Amém.",
+                verseQuote: "Acima de tudo, guarde o seu coração, pois dele procedem as fontes da vida.",
+                verseReference: "Provérbios 4:23",
+                briefExplanation: `A intimidade em um namoro com propósito vai além do aspecto físico; abrange a conexão emocional, espiritual e mental. O versículo de Provérbios 4:23 nos lembra da importância de guardar o coração, pois é dele que fluem todas as coisas. Para Juann e Juliana, cultivar a intimidade intencionalmente significa priorizar o tempo de qualidade juntos, compartilhar seus corações, sonhos e medos de forma transparente, e buscar a Deus em conjunto como base para o seu relacionamento. É um convite a nutrir o relacionamento em todas as suas dimensões, construindo uma base sólida para um futuro em Cristo.
+<div class="explanation-quote"><b>1 Coríntios 6:18:</b> "Fujam da imoralidade sexual. Todos os outros pecados que alguém comete, o fazem fora do corpo; mas aquele que pratica a imoralidade sexual peca contra o seu próprio corpo."</div>
+No namoro, guardar o coração e o corpo é um ato de amor e respeito mútuo, honrando a Deus e um ao outro.`,
+                prayer: "Pai, que a nossa intimidade seja um reflexo do Teu amor e propósito. Ajuda-nos, Juann e Juliana, a cultivarmos uma conexão profunda em todas as áreas de nossa vida, buscando-Te juntos e compartilhando nossos corações com intenção e pureza. Que nosso amor seja intencional e que nossa união seja cada vez mais fortalecida em Ti, guardando nossos corações para o Teu tempo e vontade. Amém.",
                 tips: [
-                    "Reservem um tempo de 'desconexão digital' hoje, focando totalmente um no outro, sem interrupções de telas.",
-                    "Compartilhem um desejo ou sonho pessoal com seu cônjuge, fortalecendo a confiança e a vulnerabilidade."
+                    "Reservem um tempo de 'desconexão digital' hoje, focando totalmente um no outro, sem interrupções de telas, conversando e orando.",
+                    "Compartilhem um desejo ou sonho pessoal profundo com seu namorado(a), fortalecendo a confiança e a vulnerabilidade."
                 ],
                 videoUrl: "https://www.youtube.com/watch?v=kYcug11yF80", // Música romântica e cristã
                 backgroundColor: "#FFB6C1" // Rosa claro para amor e carinho
             },
             {
                 dayNumber: 6,
-                theme: "Adversidades e Propósito ⛈️",
-                verseQuote: "E sabemos que em todas as coisas Deus trabalha para o bem daqueles que o amam, dos que foram chamados segundo o seu propósito.",
-                verseReference: "Romanos 8:28",
-                briefExplanation: "Nenhum casamento está imune às adversidades. No entanto, um amor com propósito vê as dificuldades não como obstáculos intransponíveis, mas como oportunidades para Deus manifestar o Seu poder e fortalecer o casal. Romanos 8:28 é uma promessa poderosa para Juann e Juliana, lembrando-os de que, mesmo nas provações, Deus está trabalhando para o bem. Enfrentar as adversidades juntos, com fé e confiança no propósito de Deus, não só solidifica a união, mas também revela a glória de Deus através da resiliência e da perseverança do casal.",
-                prayer: "Pai celestial, nos momentos de adversidade, ajuda-nos, Juann e Juliana, a lembrar que Tu estás conosco e que trabalhas para o nosso bem. Dá-nos força para enfrentar os desafios juntos, sem desistir, e fé para ver o Teu propósito mesmo em meio às dificuldades. Que nossa união seja fortalecida e que Teu nome seja glorificado através de nossas lutas. Amém.",
+                theme: "Coragem e Resiliência nas Adversidades ⛈️",
+                verseQuote: "Não fui eu que lhe ordenei? Seja forte e corajoso! Não se apavore nem desanime, pois o Senhor, o seu Deus, estará com você por onde você andar.",
+                verseReference: "Josué 1:9",
+                briefExplanation: "Nenhum relacionamento está imune às adversidades. Em um amor com propósito, Juann e Juliana veem as dificuldades não como obstáculos intransponíveis, mas como oportunidades para exercitar a coragem e a resiliência em Deus. Josué 1:9 é uma promessa poderosa, lembrando-os de que a presença do Senhor lhes dá a força para não desanimar. Enfrentar os desafios juntos, com fé e confiança no propósito de Deus, não só solidifica a união, mas também revela a glória de Deus através da perseverança e da coragem do casal no namoro.",
+                prayer: "Pai celestial, nos momentos de adversidade, ajuda-nos, Juann e Juliana, a lembrar que Tu estás conosco e nos fortaleces. Dá-nos coragem para enfrentar os desafios juntos, sem desistir, e fé para ver o Teu propósito mesmo em meio às dificuldades. Que nossa união seja fortalecida e que Teu nome seja glorificado através de nossas lutas e de nossa resiliência em Ti. Amém.",
                 tips: [
-                    "Lembrem-se de uma adversidade que superaram juntos no passado. Conversem sobre o que aprenderam e como Deus agiu.",
-                    "Orem especificamente por uma dificuldade atual, entregando-a a Deus e reafirmando a confiança no plano d'Ele para o bem de vocês."
+                    "Lembrem-se de uma dificuldade que superaram juntos no passado. Conversem sobre o que aprenderam e como Deus agiu, dando-lhes coragem.",
+                    "Orem especificamente por uma dificuldade atual, entregando-a a Deus e reafirmando a confiança no plano d'Ele para o bem de vocês e para a resiliência do seu amor."
                 ],
                 videoUrl: "https://www.youtube.com/watch?v=N4tD1l_Rz4c", // Música de superação/adoração
                 backgroundColor: "#B0C4DE" // Azul acinzentado para resiliência
@@ -256,13 +295,13 @@ Proteger a intimidade do casal é proteger o coração do casamento.`,
                 theme: "Um Legado de Fé ✨",
                 verseQuote: "Mas, quanto a mim e à minha casa, serviremos ao Senhor.",
                 verseReference: "Josué 24:15",
-                briefExplanation: `Chegamos ao ponto crucial de um amor com propósito: construir um legado de fé que transcenda o casal e impacte as futuras gerações. A declaração de Josué, "Eu e minha casa serviremos ao Senhor", é um poderoso convite para Juann e Juliana tomarem essa mesma decisão. Um legado de fé não se constrói apenas com palavras, mas com a vivência diária dos princípios bíblicos, o exemplo de amor, perdão, serviço e devoção a Deus. É a semente plantada que renderá frutos em suas vidas, em seus filhos e em todos que forem alcançados pela luz do seu casamento.
+                briefExplanation: `Chegamos ao ponto crucial de um amor com propósito: construir um legado de fé que transcenda o casal e impacte as futuras gerações. A declaração de Josué, "Eu e minha casa serviremos ao Senhor", é um poderoso convite para Juann e Juliana tomarem essa mesma decisão, mesmo no namoro. Um legado de fé não se constrói apenas com palavras, mas com a vivência diária dos princípios bíblicos, o exemplo de amor, perdão, serviço e devoção a Deus. É a semente plantada que renderá frutos em suas vidas, em seus filhos (se for da vontade de Deus) e em todos que forem alcançados pela luz do relacionamento de vocês.
 <div class="explanation-quote"><b>Salmo 78:4:</b> "Não os esconderemos dos nossos filhos; contaremos à próxima geração os louváveis feitos do Senhor, o seu poder e as maravilhas que fez."</div>
-A decisão de servir ao Senhor como casal é o alicerce para um legado eterno.`,
-                prayer: "Pai amado, hoje reafirmamos nossa decisão: 'Eu e minha casa serviremos ao Senhor'. Ajuda-nos, Juann e Juliana, a viver de forma que nosso casamento seja um testemunho da Tua bondade e fidelidade. Que possamos edificar um lar onde a Tua presença seja constante e que o legado de fé que construímos inspire as futuras gerações a Te amar e Te servir. Que nosso amor tenha um propósito eterno. Amém.",
+A decisão de servir ao Senhor como casal é o alicerce para um legado eterno, que começa agora.`,
+                prayer: "Pai amado, hoje reafirmamos nossa decisão: 'Eu e Juann/Juliana, serviremos ao Senhor'. Ajuda-nos a viver de forma que nosso relacionamento seja um testemunho da Tua bondade e fidelidade. Que possamos edificar um caminho onde a Tua presença seja constante e que o legado de fé que construímos inspire as futuras gerações a Te amar e Te servir. Que nosso amor tenha um propósito eterno. Amém.",
                 tips: [
-                    "Conversem sobre como vocês desejam ser lembrados como casal, qual o 'legado' espiritual que querem deixar.",
-                    "Escrevam uma oração ou declaração de propósito para o seu casamento, para ser lida e reafirmada periodicamente."
+                    "Conversem sobre como vocês desejam ser lembrados como casal, qual o 'legado' espiritual que querem deixar, começando no namoro.",
+                    "Escrevam uma oração ou declaração de propósito para o seu relacionamento, para ser lida e reafirmada periodicamente."
                 ],
                 meditationVideoUrl: "https://www.youtube.com/watch?v=Q-97f25H6S0", // Música inspiradora e conclusiva
                 backgroundColor: "#2E8B57" // Verde-mar para esperança e legado
@@ -277,9 +316,11 @@ A decisão de servir ao Senhor como casal é o alicerce para um legado eterno.`,
             
             const meditationSection = document.getElementById('meditation-section');
             const studyContent = document.getElementById('study-content');
+            const lockedDaySection = document.getElementById('locked-day-section');
             const navButtons = document.querySelector('.nav-button-container');
-            const musicPlayerContainer = document.querySelector('.music-player-container'); // Agora definido aqui
-            const youtubeIframe = document.getElementById('meditation-video'); // O iframe para a meditação final
+            const youtubeMeditationIframe = document.getElementById('meditation-video'); // O iframe para a meditação final
+            const normalVideoPlayerContainer = document.getElementById('normal-video-player');
+            const normalVideoIframe = document.getElementById('youtube-player-iframe');
 
             const latinPrayerContainer = document.querySelector('.latin-prayer-container');
             if (latinPrayerContainer) latinPrayerContainer.remove();
@@ -287,14 +328,21 @@ A decisão de servir ao Senhor como casal é o alicerce para um legado eterno.`,
             // Reset visibilidade
             meditationSection.classList.add('hidden');
             studyContent.style.display = 'block';
+            lockedDaySection.classList.add('hidden');
             navButtons.style.display = 'flex';
-            if (musicPlayerContainer) musicPlayerContainer.style.display = 'none';
+            if (normalVideoPlayerContainer) normalVideoPlayerContainer.classList.add('hidden'); // Esconde o player normal por padrão
 
-            // Configuração específica para o dia 7 (meditação final)
-            if (data.dayNumber === 7) {
+            // Lógica do Cadeado
+            if (currentDayIndex + 1 > maxUnlockedDay && currentDayIndex !== TOTAL_DIAS - 1) { // Bloqueia se o dia não foi desbloqueado, exceto para o dia final de meditação (se já estivermos lá)
+                studyContent.style.display = 'none';
+                meditationSection.classList.add('hidden');
+                lockedDaySection.classList.remove('hidden');
+                if (normalVideoPlayerContainer) normalVideoPlayerContainer.classList.add('hidden');
+            } else if (data.dayNumber === TOTAL_DIAS) { // Configuração específica para o último dia (meditação final)
                 studyContent.style.display = 'none';
                 navButtons.style.display = 'none';
                 meditationSection.classList.remove('hidden');
+                lockedDaySection.classList.add('hidden');
                 document.getElementById('meditation-title').innerHTML = "O Propósito se Revela";
                 document.getElementById('meditation-text').innerHTML = `<p style="text-align: center;"><strong>Juann & Juliana: Um Amor com Propósito</strong></p>Chegamos ao nosso último dia. Que esta jornada tenha fortalecido a fé e renovado o propósito do seu amor. Cada tema foi pensado para edificar sua união em Cristo.<br><br>Encontre um lugar tranquilo, coloque os fones 🎧, respire fundo e <b>dê o play</b>. Feche seus olhos e permita que esta canção inspire o seu coração.<br><br><p style="text-align: center;"><strong>Deus abençoe seu Amor! ❤️</strong></p>`;
                 
@@ -302,37 +350,27 @@ A decisão de servir ao Senhor como casal é o alicerce para um legado eterno.`,
                     const url = new URL(data.meditationVideoUrl);
                     let videoId = url.searchParams.get('v');
                     if (videoId) {
-                        youtubeIframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=0&mute=0&controls=1&loop=1&playlist=${videoId}`;
-                        musicPlayerContainer.style.display = 'block';
+                        youtubeMeditationIframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=0&mute=0&controls=1&loop=1&playlist=${videoId}`;
+                        youtubeMeditationIframe.parentElement.classList.remove('hidden'); // Mostra o player de meditação
                     }
                 } catch(e) {
-                    console.error("URL do YouTube inválida:", data.meditationVideoUrl, e);
+                    console.error("URL do YouTube inválida para meditação final:", data.meditationVideoUrl, e);
                 }
-            } else {
-                // Lógica para vídeos normais (dia 2, dia 5, dia 6)
-                const normalVideoPlayer = document.getElementById('normal-video-player'); // Novo ID para o player de vídeo normal
+            } else { // Exibe o conteúdo normal do estudo
+                studyContent.style.display = 'block';
+                meditationSection.classList.add('hidden');
+                lockedDaySection.classList.add('hidden');
+
+                // Lógica para vídeos normais (dia 1, dia 2, dia 5, dia 6)
                 if (data.videoUrl) {
-                    if (!normalVideoPlayer) { // Cria o player se não existir
-                        const newPlayer = document.createElement('div');
-                        newPlayer.className = 'music-player-container';
-                        newPlayer.id = 'normal-video-player';
-                        newPlayer.innerHTML = `<iframe id="youtube-player-iframe" src="" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
-                        document.getElementById('brief-explanation-text').after(newPlayer); // Insere após a explicação
-                    }
-                    const iframe = document.getElementById('youtube-player-iframe');
                     try {
                         const url = new URL(data.videoUrl);
                         let videoId = url.searchParams.get('v');
                         if (videoId) {
-                            iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=0&mute=0&controls=1&loop=1&playlist=${videoId}`;
-                            document.getElementById('normal-video-player').style.display = 'block';
+                            normalVideoIframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=0&mute=0&controls=1&loop=1&playlist=${videoId}`;
+                            normalVideoPlayerContainer.classList.remove('hidden'); // Mostra o player normal
                         }
-                    } catch(e) { console.error("URL do YouTube inválida:", data.videoUrl, e); }
-                } else {
-                    if (normalVideoPlayer) {
-                        normalVideoPlayer.style.display = 'none'; // Esconde o player se não houver vídeo
-                        document.getElementById('youtube-player-iframe').src = ''; // Limpa o src
-                    }
+                    } catch(e) { console.error("URL do YouTube inválida para vídeo normal:", data.videoUrl, e); }
                 }
             }
 
@@ -356,15 +394,13 @@ A decisão de servir ao Senhor como casal é o alicerce para um legado eterno.`,
             const tipsList = document.getElementById('tips-list');
             tipsList.innerHTML = '';
             
-            // Define o background-color para o body com base nos dados do dia
-            document.body.style.backgroundImage = 'none'; // Remove qualquer imagem de fundo
+            document.body.style.backgroundImage = 'none';
             document.body.style.backgroundColor = data.backgroundColor;
 
             document.getElementById('bonus-espiritual-title').innerText = "Dicas para o seu dia";
             document.querySelector('#brief-explanation-text').previousElementSibling.innerText = "Explicação:";
             
-            // Ajusta o título da seção de dicas
-            if(data.dayNumber === 2 || data.dayNumber === 5 || data.dayNumber === 6) { // Dias com vídeo
+            if(data.videoUrl && data.dayNumber !== TOTAL_DIAS) { // Dias com vídeo (exceto o último de meditação)
                 document.getElementById('bonus-espiritual-title').innerText = "Bônus Espiritual ✨";
             } else {
                 document.getElementById('bonus-espiritual-title').innerText = "Reflexão e Prática ✍️";
@@ -378,21 +414,16 @@ A decisão de servir ao Senhor como casal é o alicerce para um legado eterno.`,
                 tipsList.appendChild(li);
             });
             
-            // Adiciona a oração em latim somente no dia 4 se for o caso
-            if (data.dayNumber === 4) {
+            if (data.dayNumber === 4) { // Dia 4 com oração em Latim (agora em português, com novo foco)
                 quoteEl.classList.add('smaller-quote');
                 
-                // Remove o container de música do dia 4 se houver
-                const normalVideoPlayer = document.getElementById('normal-video-player');
-                if (normalVideoPlayer) normalVideoPlayer.style.display = 'none';
-
                 const prayerContainer = document.createElement('div');
                 prayerContainer.className = 'latin-prayer-container';
-                prayerContainer.style.color = 'var(--secondary-text)'; // Ajuste de cor para o novo tema
+                prayerContainer.style.color = 'var(--secondary-text)';
                 const prayerLines = [
-                    "Omnia per Ipsum facta sunt, et sine Ipso factum est nihil.",
-                    "In Ipso vita erat, et vita erat lux hominum.",
-                    "Et lux in tenebris lucet, et tenebrae eam non comprehenderunt."
+                    "Coragem na Fé, Força no Amor.",
+                    "Que a Resiliência floresça em nosso caminho.",
+                    "Que a Luz de Cristo guie nossos passos."
                 ];
                 prayerLines.forEach(line => {
                     const p = document.createElement('p');
@@ -406,7 +437,6 @@ A decisão de servir ao Senhor como casal é o alicerce para um legado eterno.`,
             updateNavigationButtons();
         }
 
-        
         function updateNavigationButtons() {
             const prevBtn = document.getElementById('prev-day-btn');
             const nextBtn = document.getElementById('next-day-btn');
@@ -414,11 +444,18 @@ A decisão de servir ao Senhor como casal é o alicerce para um legado eterno.`,
 
             prevBtn.disabled = (currentDayIndex === 0);
 
-            if (currentDayIndex === bibleStudyData.length - 1) {
+            if (currentDayIndex + 1 === TOTAL_DIAS) { // No último dia (antes da meditação final)
                 nextBtn.style.display = 'none';
                 finishBtn.classList.remove('hidden');
                 finishBtn.style.display = 'block';
-            } else {
+            } else if (currentDayIndex + 1 > maxUnlockedDay) { // Se o próximo dia ainda não foi desbloqueado
+                nextBtn.disabled = true;
+                nextBtn.style.display = 'block';
+                finishBtn.classList.add('hidden');
+                finishBtn.style.display = 'none';
+            }
+            else { // Dias normais e já desbloqueados
+                nextBtn.disabled = false;
                 nextBtn.style.display = 'block';
                 finishBtn.classList.add('hidden');
                 finishBtn.style.display = 'none';
@@ -429,6 +466,11 @@ A decisão de servir ao Senhor como casal é o alicerce para um legado eterno.`,
             document.getElementById('meditation-section').classList.add('hidden');
             document.getElementById('study-content').style.display = 'block';
             document.querySelector('.nav-button-container').style.display = 'flex';
+             // Assegura que o player de vídeo normal (se existir) seja reativado se o dia tiver vídeo
+            if (bibleStudyData[currentDayIndex].videoUrl && currentDayIndex !== TOTAL_DIAS -1) {
+                document.getElementById('normal-video-player').classList.remove('hidden');
+            }
+            updateNavigationButtons(); // Atualiza os botões após iniciar o estudo do dia 7
         });
 
         document.getElementById('prev-day-btn').addEventListener('click', () => {
@@ -440,7 +482,13 @@ A decisão de servir ao Senhor como casal é o alicerce para um legado eterno.`,
         });
 
         document.getElementById('next-day-btn').addEventListener('click', () => {
-            if (currentDayIndex < bibleStudyData.length - 1) {
+            if (currentDayIndex + 1 <= TOTAL_DIAS) { // Impede ir além do número total de dias
+                if (currentDayIndex + 1 === maxUnlockedDay) { // Se o dia que está sendo acessado é o próximo a ser desbloqueado
+                    if (maxUnlockedDay < TOTAL_DIAS) { // Desbloqueia o próximo dia se ainda não for o último
+                        maxUnlockedDay++;
+                        localStorage.setItem('maxUnlockedDay', maxUnlockedDay);
+                    }
+                }
                 currentDayIndex++;
                 loadDayContent(currentDayIndex);
                 window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -448,12 +496,20 @@ A decisão de servir ao Senhor como casal é o alicerce para um legado eterno.`,
         });
 
         document.addEventListener('DOMContentLoaded', () => {
+            maxUnlockedDay = parseInt(localStorage.getItem('maxUnlockedDay')) || 1; // Carrega o último dia desbloqueado ou define como 1
+            
             const urlParams = new URLSearchParams(window.location.search);
             let dia = parseInt(urlParams.get('dia')) - 1;
             if (isNaN(dia) || dia < 0 || dia >= TOTAL_DIAS) {
                 dia = 0; // Começa no primeiro dia se o parâmetro for inválido
             }
-            loadDayContent(dia);
+
+            // Garante que o usuário não acesse um dia além do que está desbloqueado via URL
+            if (dia + 1 > maxUnlockedDay && dia !== TOTAL_DIAS -1) {
+                loadDayContent(maxUnlockedDay - 1); // Redireciona para o último dia desbloqueado
+            } else {
+                loadDayContent(dia);
+            }
         });
     </script>
 </body>
