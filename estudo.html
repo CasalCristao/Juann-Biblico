@@ -92,9 +92,9 @@
         .nav-button { background-color: var(--button-bg); color: white; padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: 600; font-size: 1.05rem; transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease; cursor: pointer; border: none; flex-grow: 1; max-width: 220px; text-align: center; }
         .nav-button:hover:not(:disabled) { background-color: var(--button-hover-bg); transform: translateY(-2px); }
         .nav-button:disabled { background-color: #cccccc; cursor: not-allowed; transform: translateY(0); }
-        .music-player-container { margin-top: 2.5rem; margin-bottom: 2rem; width: 100%; max-width: 600px; text-align: center; }
+        .music-player-container, .final-photo-container { margin-top: 2.5rem; margin-bottom: 2rem; width: 100%; max-width: 600px; text-align: center; }
         .music-player-container iframe { width: 100%; height: 330px; border-radius: 0.85rem; box-shadow: 0 5px 15px rgba(0,0,0,0.2); border: none; }
-        .music-player-container p { font-size: 0.95rem; font-style: italic; color: var(--secondary-text); margin-top: 0.8rem; text-align: center; }
+        .music-player-container p, .final-photo-container p { font-size: 0.95rem; font-style: italic; color: var(--secondary-text); margin-top: 0.8rem; text-align: center; }
         .latin-prayer-container { width: auto; text-align: center; margin: 3rem 0 2rem 0; font-family: 'Cinzel', serif; color: var(--secondary-text); font-size: 1.2rem; font-weight: 400; text-shadow: none; }
         .meditation-intro { padding-bottom: 2rem; margin-bottom: 2rem; }
 
@@ -137,7 +137,7 @@
             .tip-item.motivational-message::before, .tip-item.meditation-text::before { display: none; }
             .nav-button-container { flex-direction: column; gap: 0.75rem; }
             .nav-button { max-width: none; padding: 0.65rem 1.2rem; font-size: 1.05rem; }
-            .music-player-container { max-width: 100%; margin-top: 1.5rem; margin-bottom: 1.5rem; }
+            .music-player-container, .final-photo-container { max-width: 100%; margin-top: 1.5rem; margin-bottom: 1.5rem; }
             .music-player-container iframe { height: 220px; }
             .latin-prayer-container { font-size: 1rem; }
             .locked-day-message { padding: 2rem; font-size: 1.2rem; min-height: 250px; }
@@ -187,6 +187,8 @@
                     <p>Reflexão musical para o seu dia.</p>
                 </div>
 
+                <div id="final-photo-container" class="final-photo-container hidden"></div>
+
                 <h3 class="section-title" id="bonus-espiritual-title">Dicas para o seu dia</h3>
                 <ul id="tips-list"></ul>
             </div>
@@ -203,7 +205,7 @@
 
     <script>
         const TOTAL_DIAS = 7;
-        let maxUnlockedDay = 1; // Controla qual é o dia máximo desbloqueado
+        let maxUnlockedDay = 1;
 
         const bibleStudyData = [
             {
@@ -223,8 +225,8 @@ O desafio de vocês é permitir que o amor seja esse "elo perfeito" que une toda
                     "<strong>O Desafio da Unidade:</strong> Conversem e escolham UMA área específica do relacionamento onde vocês querem fortalecer a união esta semana. Pode ser na comunicação, no tempo de qualidade ou em um objetivo em comum. Escrevam essa meta e orem sobre ela.",
                     "<strong>Meditação no Quebra-cabeça:</strong> Leiam juntos, em voz alta, o capítulo de 1 Coríntios 13. Após a leitura, conversem: Qual 'peça' (característica do amor descrita no capítulo) vocês sentem que Deus está convidando vocês a praticarem mais? Como essa peça ajuda a 'completar o quebra-cabeça' do relacionamento de vocês?",
                 ],
-                videoUrl: "https://www.youtube.com/watch?v=0yRG956f-6A", // Nova música para o dia 1
-                backgroundColor: "#F7CAC9" // Tons de rosa claro para suavidade e união
+                videoUrl: "https://www.youtube.com/watch?v=0yRG956f-6A",
+                backgroundColor: "#F7CAC9"
             },
             {
                 dayNumber: 2,
@@ -237,8 +239,8 @@ O desafio de vocês é permitir que o amor seja esse "elo perfeito" que une toda
                     "Dediquem 10 minutos hoje para uma 'conversa intencional', onde cada um compartilha um ponto positivo do dia do outro.",
                     "Ao surgir um desentendimento, antes de responder, pausem e peçam a Deus por sabedoria e paciência."
                 ],
-                videoUrl: "https://www.youtube.com/watch?v=k_lP2sY892w", // Música calma para reflexão
-                backgroundColor: "#ADD8E6" // Azul claro para clareza e paz
+                videoUrl: "https://www.youtube.com/watch?v=k_lP2sY892w",
+                backgroundColor: "#ADD8E6"
             },
             {
                 dayNumber: 3,
@@ -251,12 +253,31 @@ O desafio de vocês é permitir que o amor seja esse "elo perfeito" que une toda
                     "Conversem abertamente sobre seus hábitos e metas financeiras pessoais. A transparência é essencial para construir confiança.",
                     "Escolham uma causa ou ministério que desejam apoiar juntos com uma oferta, praticando a generosidade e a fé."
                 ],
-                backgroundColor: "#F0E68C" // Amarelo dourado para prosperidade e bênção
+                backgroundColor: "#F0E68C"
             },
             {
                 dayNumber: 4,
+                theme: "Construindo um Lar: Sabedoria e Perdão 🏡",
+                verseQuote: "Com a sabedoria se edifica a casa, e com o entendimento ela se firma.",
+                verseReference: "Provérbios 24:3",
+                briefExplanation: `Para Juann e Juliana, a jornada de um amor com propósito é como a construção de uma casa. Não uma casa de tijolos, mas um lar espiritual e emocional. Este versículo de Provérbios nos ensina que a sabedoria e o entendimento são os alicerces. A sabedoria é saber como agir com amor, e o entendimento é a capacidade de se colocar no lugar do outro.
+<br><br>
+Toda casa, por mais forte que seja, às vezes sofre danos. Palavras duras podem criar rachaduras nas paredes, e atitudes impensadas podem quebrar uma janela. É aqui que entra o perdão. O perdão não é ignorar o dano, mas é a ferramenta que Deus nos dá para consertar, rebocar e fortalecer a estrutura do nosso lar. É um ato de coragem que traz resiliência.
+<br><br>
+Como diz em Efésios 4:32: <i>"Sede uns para com os outros benignos, misericordiosos, perdoando-vos uns aos outros, como também Deus vos perdoou em Cristo."</i> Ao perdoar, vocês estão escolhendo manter o lar que estão construindo um lugar seguro e cheio de graça.`,
+                prayer: "Senhor, nosso arquiteto divino, dá-nos a sabedoria para edificar nosso relacionamento sobre a rocha que és Tu. Ensina-nos a usar o entendimento para nos fortalecermos. Acima de tudo, Pai, dá a Juann e Juliana um coração rápido para perdoar, assim como Tu nos perdoas. Que o nosso 'lar' seja um refúgio de paz, graça e resiliência. (Sugerimos que orem em voz alta, de mãos dadas, pedindo perdão por falhas específicas e reafirmando o compromisso de se perdoarem). Amém.",
+                tips: [
+                    "<strong>O que é 'Lar' para vocês?:</strong> Conversem sobre atitudes e palavras específicas que fazem vocês se sentirem 'em casa' e seguros um com o outro. Como vocês podem ser mais intencionais em criar esse ambiente de refúgio?",
+                    "<strong>Praticando o Perdão Diário:</strong> Pensem em uma pequena irritação ou falha recente (pode ser algo simples). Em vez de guardar, escolham liberar o perdão em oração. Compartilhem um com o outro: 'Eu escolho te perdoar por...' para exercitar esse músculo espiritual."
+                ],
+                imageFile: "foto-casal.jpg", // Nome do arquivo da sua foto!
+                videoUrl: "https://www.youtube.com/watch?v=FFs_A6iP9sI",
+                backgroundColor: "#F5F5DC"
+            },
+            {
+                dayNumber: 5,
                 theme: "Servindo Juntos 🙌",
-                verseQuote: "Cada uno ejerza el don que recibió para servir a los demás, administrando fielmente la gracia de Dios en sus diversas formas.",
+                verseQuote: "Cada um exerça o dom que recebeu para servir aos outros, administrando fielmente a graça de Deus em suas múltiplas formas.",
                 verseReference: "1 Pedro 4:10",
                 briefExplanation: `Um amor com propósito se estende para além do casal, impactando o mundo ao redor. Este versículo de 1 Pedro desafia Juann e Juliana a identificar e usar os dons que Deus lhes deu para servir uns aos outros, na família, na igreja e na comunidade. Servir juntos fortalece o vínculo do casal e dá um significado maior à sua união. Encontrar maneiras de ser uma bênção para os outros é uma expressão poderosa do amor de Cristo através do relacionamento de vocês, preparando o caminho para uma vida de serviço mútuo e com propósito, onde a coragem de se doar e a resiliência diante das dificuldades são exercitadas e o perdão é uma ferramenta constante.`,
                 prayer: "Senhor, revela-nos, Juann e Juliana, os dons que nos confiaste. Que possamos usá-los fielmente para Te servir e abençoar aqueles ao nosso redor. Abre nossos olhos para as oportunidades de servir juntos e que nosso relacionamento seja um canal da Tua graça e amor para o mundo. Amém.",
@@ -264,23 +285,7 @@ O desafio de vocês é permitir que o amor seja esse "elo perfeito" que une toda
                     "Identifiquem uma pequena ação de serviço que possam fazer juntos hoje, seja para um familiar, amigo ou vizinho.",
                     "Conversem sobre como seus dons individuais podem se complementar para servir a Deus de forma mais eficaz como casal, mesmo no relacionamento."
                 ],
-                backgroundColor: "#AFEEEE" // Azul turquesa para serviço e fluidez
-            },
-            {
-                dayNumber: 5,
-                theme: "Intimidade com Intenção ❤️",
-                verseQuote: "Acima de tudo, guarde o seu coração, pois dele procedem as fontes da vida.",
-                verseReference: "Provérbios 4:23",
-                briefExplanation: `A intimidade em um relacionamento com propósito vai além do aspecto físico; abrange a conexão emocional, espiritual e mental. O versículo de Provérbios 4:23 nos lembra da importância de guardar o coração, pois é dele que fluem todas as coisas. Para Juann e Juliana, cultivar a intimidade intencionalmente significa priorizar o tempo de qualidade juntos, compartilhar seus corações, sonhos e medos de forma transparente, e buscar a Deus em conjunto como base para o seu relacionamento. É um convite a nutrir o relacionamento em todas as suas dimensões, construindo uma base sólida para um futuro em Cristo, onde a coragem de ser vulnerável e a resiliência para superar obstáculos fortalecem o perdão e a união.
-<div class="explanation-quote"><b>1 Coríntios 6:18:</b> "Fujam da imoralidade sexual. Todos os outros pecados que alguém comete, o fazem fora do corpo; mas aquele que pratica a imoralidade sexual peca contra o seu próprio corpo."</div>
-No relacionamento, guardar o coração e o corpo é um ato de amor e respeito mútuo, honrando a Deus e um ao outro.`,
-                prayer: "Pai, que a nossa intimidade seja um reflexo do Teu amor e propósito. Ajuda-nos, Juann e Juliana, a cultivarmos uma conexão profunda em todas as áreas de nossa vida, buscando-Te juntos e compartilhando nossos corações com intenção e pureza. Que nosso amor seja intencional e que nossa união seja cada vez mais fortalecida em Ti, guardando nossos corações para o Teu tempo e vontade. Amém.",
-                tips: [
-                    "Reservem um tempo de 'desconexão digital' hoje, focando totalmente um no outro, sem interrupções de telas, conversando e orando.",
-                    "Compartilhem um desejo ou sonho pessoal profundo com seu companheiro(a), fortalecendo a confiança e a vulnerabilidade."
-                ],
-                videoUrl: "https://www.youtube.com/watch?v=kYcug11yF80", // Música romântica e cristã
-                backgroundColor: "#FFB6C1" // Rosa claro para amor e carinho
+                backgroundColor: "#AFEEEE"
             },
             {
                 dayNumber: 6,
@@ -293,8 +298,8 @@ No relacionamento, guardar o coração e o corpo é um ato de amor e respeito m�
                     "Lembrem-se de uma dificuldade que superaram juntos no passado. Conversem sobre o que aprenderam e como Deus agiu, dando-lhes coragem.",
                     "Orem especificamente por uma dificuldade atual, entregando-a a Deus e reafirmando a confiança no plano d'Ele para o bem de vocês e para a resiliência do seu amor."
                 ],
-                videoUrl: "https://www.youtube.com/watch?v=N4tD1l_Rz4c", // Música de superação/adoração
-                backgroundColor: "#B0C4DE" // Azul acinzentado para resiliência
+                videoUrl: "https://www.youtube.com/watch?v=N4tD1l_Rz4c",
+                backgroundColor: "#B0C4DE"
             },
             {
                 dayNumber: 7,
@@ -309,8 +314,8 @@ A decisão de servir ao Senhor como casal é o alicerce para um legado eterno, q
                     "Conversem sobre como vocês desejam ser lembrados como casal, qual o 'legado' espiritual que querem deixar, começando no relacionamento.",
                     "Escrevam uma oração ou declaração de propósito para o seu relacionamento, para ser lida e reafirmada periodicamente."
                 ],
-                meditationVideoUrl: "https://www.youtube.com/watch?v=Q-97f25H6S0", // Música inspiradora e conclusiva
-                backgroundColor: "#2E8B57" // Verde-mar para esperança e legado
+                meditationVideoUrl: "https://www.youtube.com/watch?v=Q-97f25H6S0",
+                backgroundColor: "#2E8B57"
             }
         ];
 
@@ -324,9 +329,10 @@ A decisão de servir ao Senhor como casal é o alicerce para um legado eterno, q
             const studyContent = document.getElementById('study-content');
             const lockedDaySection = document.getElementById('locked-day-section');
             const navButtons = document.querySelector('.nav-button-container');
-            const youtubeMeditationIframe = document.getElementById('meditation-video'); // O iframe para a meditação final
+            const youtubeMeditationIframe = document.getElementById('meditation-video');
             const normalVideoPlayerContainer = document.getElementById('normal-video-player');
             const normalVideoIframe = document.getElementById('youtube-player-iframe');
+            const finalPhotoContainer = document.getElementById('final-photo-container');
 
             const latinPrayerContainer = document.querySelector('.latin-prayer-container');
             if (latinPrayerContainer) latinPrayerContainer.remove();
@@ -336,15 +342,17 @@ A decisão de servir ao Senhor como casal é o alicerce para um legado eterno, q
             studyContent.style.display = 'block';
             lockedDaySection.classList.add('hidden');
             navButtons.style.display = 'flex';
-            if (normalVideoPlayerContainer) normalVideoPlayerContainer.classList.add('hidden'); // Esconde o player normal por padrão
+            if (normalVideoPlayerContainer) normalVideoPlayerContainer.classList.add('hidden');
+            if (finalPhotoContainer) finalPhotoContainer.classList.add('hidden');
+
 
             // Lógica do Cadeado
-            if (currentDayIndex + 1 > maxUnlockedDay && currentDayIndex !== TOTAL_DIAS - 1) { // Bloqueia se o dia não foi desbloqueado, exceto para o dia final de meditação (se já estivermos lá)
+            if (currentDayIndex + 1 > maxUnlockedDay && currentDayIndex !== TOTAL_DIAS - 1) {
                 studyContent.style.display = 'none';
                 meditationSection.classList.add('hidden');
                 lockedDaySection.classList.remove('hidden');
                 if (normalVideoPlayerContainer) normalVideoPlayerContainer.classList.add('hidden');
-            } else if (data.dayNumber === TOTAL_DIAS) { // Configuração específica para o último dia (meditação final)
+            } else if (data.dayNumber === TOTAL_DIAS) {
                 studyContent.style.display = 'none';
                 navButtons.style.display = 'none';
                 meditationSection.classList.remove('hidden');
@@ -357,26 +365,31 @@ A decisão de servir ao Senhor como casal é o alicerce para um legado eterno, q
                     let videoId = url.searchParams.get('v');
                     if (videoId) {
                         youtubeMeditationIframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=0&mute=0&controls=1&loop=1&playlist=${videoId}`;
-                        youtubeMeditationIframe.parentElement.classList.remove('hidden'); // Mostra o player de meditação
+                        youtubeMeditationIframe.parentElement.classList.remove('hidden');
                     }
-                } catch(e) {
-                    console.error("URL do YouTube inválida para meditação final:", data.meditationVideoUrl, e);
-                }
-            } else { // Exibe o conteúdo normal do estudo
+                } catch(e) { console.error("URL do YouTube inválida para meditação final:", data.meditationVideoUrl, e); }
+            } else {
                 studyContent.style.display = 'block';
                 meditationSection.classList.add('hidden');
                 lockedDaySection.classList.add('hidden');
 
-                // Lógica para vídeos normais (dia 1, dia 2, dia 5, dia 6)
                 if (data.videoUrl) {
                     try {
                         const url = new URL(data.videoUrl);
                         let videoId = url.searchParams.get('v');
                         if (videoId) {
                             normalVideoIframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=0&mute=0&controls=1&loop=1&playlist=${videoId}`;
-                            normalVideoPlayerContainer.classList.remove('hidden'); // Mostra o player normal
+                            normalVideoPlayerContainer.classList.remove('hidden');
                         }
                     } catch(e) { console.error("URL do YouTube inválida para vídeo normal:", data.videoUrl, e); }
+                }
+                
+                if (data.imageFile) {
+                    finalPhotoContainer.innerHTML = `
+                        <img src="${data.imageFile}" alt="Foto de Juann e Juliana" style="max-width: 100%; height: auto; border-radius: 0.75rem; margin: 1.5rem auto; display: block;">
+                        <p style="font-size: 1.5rem;">🙏❤️</p>
+                    `;
+                    finalPhotoContainer.classList.remove('hidden');
                 }
             }
 
@@ -395,7 +408,7 @@ A decisão de servir ao Senhor como casal é o alicerce para um legado eterno, q
             const prayerTitleEl = document.getElementById('prayer-title');
             const prayerTextEl = document.getElementById('prayer-text');
             prayerTitleEl.innerText = "Oração:";
-            prayerTextEl.innerHTML = data.prayer; // Alterado para innerHTML para renderizar tags como <strong>
+            prayerTextEl.innerHTML = data.prayer;
 
             const tipsList = document.getElementById('tips-list');
             tipsList.innerHTML = '';
@@ -403,9 +416,8 @@ A decisão de servir ao Senhor como casal é o alicerce para um legado eterno, q
             document.body.style.backgroundImage = 'none';
             document.body.style.backgroundColor = data.backgroundColor;
 
-            // Ajustando o título das dicas para "Colocando o Amor em Prática" no Dia 1
-            if (data.dayNumber === 1) {
-                document.getElementById('bonus-espiritual-title').innerText = "Colocando o Amor em Prática ✍️";
+            if (data.dayNumber === 1 || data.dayNumber === 4) { // Dia 4 também é prático
+                document.getElementById('bonus-espiritual-title').innerText = "Colocando em Prática ✍️";
             } else if (data.videoUrl && data.dayNumber !== TOTAL_DIAS) {
                 document.getElementById('bonus-espiritual-title').innerText = "Bônus Espiritual ✨";
             } else {
@@ -420,10 +432,8 @@ A decisão de servir ao Senhor como casal é o alicerce para um legado eterno, q
                 tipsList.appendChild(li);
             });
             
-            if (data.dayNumber === 4) { // Dia 4 com oração em Latim (agora em português, com novo foco)
+            if (data.dayNumber === 5) { // Antigo dia 4
                 quoteEl.classList.add('smaller-quote');
-                
-                // Remove o container de música do dia 4 se houver
                 const normalVideoPlayer = document.getElementById('normal-video-player');
                 if (normalVideoPlayer) normalVideoPlayer.style.display = 'none';
 
@@ -446,7 +456,6 @@ A decisão de servir ao Senhor como casal é o alicerce para um legado eterno, q
 
             updateNavigationButtons();
         }
-
         
         function updateNavigationButtons() {
             const prevBtn = document.getElementById('prev-day-btn');
@@ -455,17 +464,17 @@ A decisão de servir ao Senhor como casal é o alicerce para um legado eterno, q
 
             prevBtn.disabled = (currentDayIndex === 0);
 
-            if (currentDayIndex + 1 === TOTAL_DIAS) { // No último dia (antes da meditação final)
+            if (currentDayIndex + 1 === TOTAL_DIAS && maxUnlockedDay === TOTAL_DIAS) {
                 nextBtn.style.display = 'none';
                 finishBtn.classList.remove('hidden');
                 finishBtn.style.display = 'block';
-            } else if (currentDayIndex + 1 > maxUnlockedDay) { // Se o próximo dia ainda não foi desbloqueado
+            } else if (currentDayIndex + 1 > maxUnlockedDay) {
                 nextBtn.disabled = true;
                 nextBtn.style.display = 'block';
                 finishBtn.classList.add('hidden');
                 finishBtn.style.display = 'none';
             }
-            else { // Dias normais e já desbloqueados
+            else {
                 nextBtn.disabled = false;
                 nextBtn.style.display = 'block';
                 finishBtn.classList.add('hidden');
@@ -474,14 +483,7 @@ A decisão de servir ao Senhor como casal é o alicerce para um legado eterno, q
         }
 
         document.getElementById('start-study-btn').addEventListener('click', () => {
-            document.getElementById('meditation-section').classList.add('hidden');
-            document.getElementById('study-content').style.display = 'block';
-            document.querySelector('.nav-button-container').style.display = 'flex';
-             // Assegura que o player de vídeo normal (se existir) seja reativado se o dia tiver vídeo
-            if (bibleStudyData[currentDayIndex].videoUrl && currentDayIndex !== TOTAL_DIAS -1) {
-                document.getElementById('normal-video-player').classList.remove('hidden');
-            }
-            updateNavigationButtons(); // Atualiza os botões após iniciar o estudo do dia 7
+            window.location.href = 'fim.html';
         });
 
         document.getElementById('prev-day-btn').addEventListener('click', () => {
@@ -493,9 +495,9 @@ A decisão de servir ao Senhor como casal é o alicerce para um legado eterno, q
         });
 
         document.getElementById('next-day-btn').addEventListener('click', () => {
-            if (currentDayIndex + 1 <= TOTAL_DIAS) { // Impede ir além do número total de dias
-                if (currentDayIndex + 1 === maxUnlockedDay) { // Se o dia que está sendo acessado é o próximo a ser desbloqueado
-                    if (maxUnlockedDay < TOTAL_DIAS) { // Desbloqueia o próximo dia se ainda não for o último
+            if (currentDayIndex + 1 < TOTAL_DIAS) {
+                if (currentDayIndex + 1 === maxUnlockedDay) {
+                    if (maxUnlockedDay < TOTAL_DIAS) {
                         maxUnlockedDay++;
                         localStorage.setItem('maxUnlockedDay', maxUnlockedDay);
                     }
@@ -505,19 +507,29 @@ A decisão de servir ao Senhor como casal é o alicerce para um legado eterno, q
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         });
+        
+        document.getElementById('finish-study-btn').addEventListener('click', (e) => {
+            e.preventDefault();
+            if(maxUnlockedDay < TOTAL_DIAS) {
+                 maxUnlockedDay++;
+                 localStorage.setItem('maxUnlockedDay', maxUnlockedDay);
+            }
+            currentDayIndex++;
+            loadDayContent(currentDayIndex);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
 
         document.addEventListener('DOMContentLoaded', () => {
-            maxUnlockedDay = parseInt(localStorage.getItem('maxUnlockedDay')) || 1; // Carrega o último dia desbloqueado ou define como 1
+            maxUnlockedDay = parseInt(localStorage.getItem('maxUnlockedDay')) || 1;
             
             const urlParams = new URLSearchParams(window.location.search);
-            let dia = parseInt(urlParams.get('dia')) - 1;
+            let dia = parseInt(urlParams.get('tema')) - 1;
             if (isNaN(dia) || dia < 0 || dia >= TOTAL_DIAS) {
-                dia = 0; // Começa no primeiro dia se o parâmetro for inválido
+                dia = 0;
             }
 
-            // Garante que o usuário não acesse um dia além do que está desbloqueado via URL
-            if (dia + 1 > maxUnlockedDay && dia !== TOTAL_DIAS -1) {
-                loadDayContent(maxUnlockedDay - 1); // Redireciona para o último dia desbloqueado
+            if (dia + 1 > maxUnlockedDay) {
+                loadDayContent(maxUnlockedDay - 1);
             } else {
                 loadDayContent(dia);
             }
