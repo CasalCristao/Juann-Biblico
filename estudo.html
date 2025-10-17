@@ -270,8 +270,8 @@ Como diz em Efésios 4:32: <i>"Sede uns para com os outros benignos, misericordi
                     "<strong>O que é 'Lar' para vocês?:</strong> Conversem sobre atitudes e palavras específicas que fazem vocês se sentirem 'em casa' e seguros um com o outro. Como vocês podem ser mais intencionais em criar esse ambiente de refúgio?",
                     "<strong>Praticando o Perdão Diário:</strong> Pensem em uma pequena irritação ou falha recente (pode ser algo simples). Em vez de guardar, escolham liberar o perdão em oração. Compartilhem um com o outro: 'Eu escolho te perdoar por...' para exercitar esse músculo espiritual."
                 ],
-                imageFile: "foto-casal.jpg", // Nome do arquivo da sua foto!
-                videoUrl: "https://www.youtube.com/watch?v=YXnQ02HYB1w", // NOVO LINK para o dia 4
+                imageFile: "foto-casal.jpg",
+                videoUrl: "https://www.youtube.com/watch?v=YXnQ02HYB1w", // Link corrigido
                 backgroundColor: "#F5F5DC"
             },
             {
@@ -433,7 +433,7 @@ A decisão de servir ao Senhor como casal é o alicerce para um legado eterno, q
             if (data.dayNumber === 5) { // Antigo dia 4, agora dia 5
                 quoteEl.classList.add('smaller-quote');
                 const normalVideoPlayer = document.getElementById('normal-video-player');
-                if (normalVideoPlayer) normalVideoPlayer.style.display = 'none';
+                if (normalVideoPlayer) normalVideoPlayer.classList.add('hidden');
 
                 const prayerContainer = document.createElement('div');
                 prayerContainer.className = 'latin-prayer-container';
@@ -522,15 +522,13 @@ A decisão de servir ao Senhor como casal é o alicerce para um legado eterno, q
             
             const urlParams = new URLSearchParams(window.location.search);
             let dia = parseInt(urlParams.get('tema')) - 1;
+            
+            // Esta lógica agora permite que o link funcione corretamente, 
+            // pois o bloqueio será verificado dentro da função loadDayContent.
             if (isNaN(dia) || dia < 0 || dia >= TOTAL_DIAS) {
-                dia = 0;
+                dia = 0; 
             }
-
-            if (dia + 1 > maxUnlockedDay) {
-                loadDayContent(maxUnlockedDay - 1);
-            } else {
-                loadDayContent(dia);
-            }
+            loadDayContent(dia);
         });
     </script>
 </body>
